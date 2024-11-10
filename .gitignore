@@ -80,3 +80,4 @@ dmypy.json
 cython_debug/
 .vscode
 poetry.lock
+*.pdf

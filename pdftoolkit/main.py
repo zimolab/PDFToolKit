@@ -1,11 +1,12 @@
+import pymupdf
 from pyguiadapter.adapter import GUIAdapter
-
 
 from pdftoolkit.configs import (
     SELECT_WINDOW_CONFIG,
     SELECT_WINDOW_LISTENER,
     SELECT_WINDOW_MENUS,
 )
+from pdftoolkit.core.page_iterator import PageIterator
 
 
 def add(a: int, b: int):
