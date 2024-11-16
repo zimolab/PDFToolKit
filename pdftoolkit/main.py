@@ -1,21 +1,16 @@
-import pymupdf
 from pyguiadapter.adapter import GUIAdapter
 
-from pdftoolkit.configs import (
+from pdftoolkit.common_configs import (
     SELECT_WINDOW_CONFIG,
     SELECT_WINDOW_LISTENER,
     SELECT_WINDOW_MENUS,
 )
-from pdftoolkit.core.page_iterator import PageIterator
-
-
-def add(a: int, b: int):
-    return a + b
+from pdftoolkit.tools import pages_to_images
 
 
 def main():
     adapter = GUIAdapter()
-    adapter.add(add)
+    adapter.add(pages_to_images)
     adapter.run(
         show_select_window=True,
         select_window_config=SELECT_WINDOW_CONFIG,

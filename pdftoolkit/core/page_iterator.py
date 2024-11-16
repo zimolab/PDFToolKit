@@ -22,9 +22,6 @@ class PageIterator(object):
         self._page_ranges = self._normalize_page_ranges_str(page_ranges)
         self._doc = doc
 
-    def __iter__(self):
-        return self.page_indexes()
-
     def page_indexes(self):
         index_sections = self._page_index_sections(self._page_ranges, self._doc.page_count)
         for indexes in index_sections:
