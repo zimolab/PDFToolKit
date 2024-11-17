@@ -1,5 +1,3 @@
-from typing import Generator
-
 from pymupdf import Document, Page
 
 ODD_PAGES = "ODD"
@@ -9,11 +7,13 @@ LAST_PAGE = "N"
 
 SPECIAL_PAGE_RANGES = (ODD_PAGES, EVEN_PAGES, ALL_PAGES, LAST_PAGE)
 
+
 class InvalidPageRangeError(Exception):
     pass
 
+
 class PageIterator(object):
-    """Page iterator for a page range string like 1-3,5,7-9 """
+    """Page iterator for a page range string like 1-3,5,7-9"""
 
     def __init__(self, page_ranges: str, doc: Document):
         # assert isinstance(page_ranges, str)
@@ -23,7 +23,9 @@ class PageIterator(object):
         self._doc = doc
 
     def page_indexes(self):
-        index_sections = self._page_index_sections(self._page_ranges, self._doc.page_count)
+        index_sections = self._page_index_sections(
+            self._page_ranges, self._doc.page_count
+        )
         for indexes in index_sections:
             if isinstance(indexes, (range, list)):
                 for idx in indexes:
@@ -43,9 +45,15 @@ class PageIterator(object):
             return ALL_PAGES
         return page_ranges
 
-    def _page_index_sections(self, page_ranges: str, page_count: int) -> list[range | int]:
-        section_strs = [range_str.strip() for range_str in page_ranges.split(",") if range_str.strip() != ""]
-        sections: list[range| list[int] | int] = []
+    def _page_index_sections(
+        self, page_ranges: str, page_count: int
+    ) -> list[range | int]:
+        section_strs = [
+            range_str.strip()
+            for range_str in page_ranges.split(",")
+            if range_str.strip() != ""
+        ]
+        sections: list[range | list[int] | int] = []
         for section_str in section_strs:
             section_str = section_str.upper()
 
@@ -79,9 +87,10 @@ class PageIterator(object):
 
         return sections
 
-
-    def _to_page_index_range(self, range_str: str, page_count: int) -> range | list[int]:
-        tmp  = [num.strip() for num in range_str.split("-") if num.strip() != ""]
+    def _to_page_index_range(
+        self, range_str: str, page_count: int
+    ) -> range | list[int]:
+        tmp = [num.strip() for num in range_str.split("-") if num.strip() != ""]
         if len(tmp) != 2:
             raise InvalidPageRangeError(f"Invalid page range: {range_str}")
         start, end = tmp
