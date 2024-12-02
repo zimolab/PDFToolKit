@@ -5,9 +5,10 @@ from pyguiadapter.action import Action
 from pyguiadapter.utils.messagebox import show_text_file, show_about_message
 from pyguiadapter.window import BaseWindow
 
-from ..constants import CURRENT_DIR, APP_AUTHOR, LICENSE, REPOSITORY
+from ..constants import PACKAGE_ROOT, APP_AUTHOR, LICENSE, REPOSITORY
 
-LICENSE_FILE = os.path.join(CURRENT_DIR, "assets/LICENSE.txt")
+LICENSE_FILE = os.path.join(PACKAGE_ROOT, "assets/LICENSE.txt")
+
 ABOUT_MESSAGE = (
     "PDFToolkit is an free and open-source software for PDF manipulation. "
     f"It is developed by {APP_AUTHOR} and is distributed under the {LICENSE} license.\n\n"
@@ -20,7 +21,7 @@ def on_action_license(window: BaseWindow, action: Action):
     """Show the license file"""
     show_text_file(
         window,
-        LICENSE_FILE,
+        text_file=LICENSE_FILE,
         text_format="plaintext",
         title="License",
         icon="fa.file-text",

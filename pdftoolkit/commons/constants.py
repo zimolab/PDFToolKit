@@ -1,6 +1,7 @@
-import os
+from pathlib import Path
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+CURRENT_DIR = Path(__file__).parent.absolute().as_posix()
+PACKAGE_ROOT = Path(CURRENT_DIR).parent.absolute().as_posix()
 
 APP_NAME = "PDF Toolkit"
 APP_VERSION = "1.0.0"

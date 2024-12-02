@@ -1,17 +1,15 @@
 import qtmodern.styles
-from pyguiadapter.widgets import ParameterWidgetFactory
-from pyguiadapter.widgets.factory import ParameterWidgetRegistry
-
-from qtpy.QtWidgets import QApplication
 from pyguiadapter.adapter import GUIAdapter
+from pyguiadapter.widgets import ParameterWidgetFactory
+from qtpy.QtWidgets import QApplication
 
-from pdftoolkit.common_configs import (
+from pdftoolkit.commons.ui.rect_widget import RectWidget, rect_tuple_t
+from pdftoolkit.select_window.config import (
     SELECT_WINDOW_CONFIG,
     SELECT_WINDOW_LISTENER,
     SELECT_WINDOW_MENUS,
 )
-from pdftoolkit.converters import pdf2images, images2pdf
-from pdftoolkit.rect_widget import rect_tuple_t, RectWidget
+from pdftoolkit.tools import pdf2images
 
 
 def register_custom_widgets():
@@ -27,15 +25,13 @@ def main():
     adapter = GUIAdapter(on_app_start=on_app_start)
     adapter.add(
         pdf2images.pdf2images,
-        group=pdf2images.GROUP,
-        icon=pdf2images.ICON,
-        display_name=pdf2images.DISPLAY_NAME,
-        cancelable=pdf2images.CANCELABLE,
-        window_config=pdf2images.WINDOW_CONFIG,
+        cancelable=pdf2images.FUNC_CANCELLABLE,
+        display_name=pdf2images.FUNC_DISPLAY_NAME,
+        document=pdf2images.FUNC_DOCUMENT,
+        document_format=pdf2images.FUNC_DOCUMENT_FORMAT,
+        icon=pdf2images.FUNC_ICON,
         widget_configs=pdf2images.WIDGET_CONFIGS,
-    )
-    adapter.add(
-        images2pdf.images2pdf, icon=images2pdf.ICON, group=images2pdf.GROUP_NAME
+        window_config=pdf2images.EXEC_WINDOW_CONFIG,
     )
     adapter.run(
         show_select_window=True,

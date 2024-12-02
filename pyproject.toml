@@ -9,8 +9,10 @@ readme = "README.md"
 python = "^3.11, <3.13"
 pyguiadapter = "^1.0.5"
 pymupdf = "^1.24.13"
-
 qtmodern = "^0.2.0"
+pillow = "^11.0.0"
+py-multitasking = "^0.1.1"
+
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
 
