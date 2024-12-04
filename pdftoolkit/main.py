@@ -9,7 +9,7 @@ from pdftoolkit.select_window.config import (
     SELECT_WINDOW_LISTENER,
     SELECT_WINDOW_MENUS,
 )
-from pdftoolkit.tools import pdf2images
+from pdftoolkit.tools import pdf2images, images2pdf
 
 
 def register_custom_widgets():
@@ -23,16 +23,8 @@ def on_app_start(app: QApplication):
 def main():
     register_custom_widgets()
     adapter = GUIAdapter(on_app_start=on_app_start)
-    adapter.add(
-        pdf2images.pdf2images,
-        cancelable=pdf2images.FUNC_CANCELLABLE,
-        display_name=pdf2images.FUNC_DISPLAY_NAME,
-        document=pdf2images.FUNC_DOCUMENT,
-        document_format=pdf2images.FUNC_DOCUMENT_FORMAT,
-        icon=pdf2images.FUNC_ICON,
-        widget_configs=pdf2images.WIDGET_CONFIGS,
-        window_config=pdf2images.EXEC_WINDOW_CONFIG,
-    )
+    pdf2images.use(adapter)
+    images2pdf.use(adapter)
     adapter.run(
         show_select_window=True,
         select_window_config=SELECT_WINDOW_CONFIG,
