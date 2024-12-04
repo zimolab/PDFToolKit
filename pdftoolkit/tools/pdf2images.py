@@ -1,4 +1,12 @@
+"""
+A tool to convert PDF pages to image files.
+
+@author: zimolab
+@created: 2024-12-02
+"""
+
 import enum
+import gc
 import os
 import time
 from dataclasses import dataclass
@@ -7,6 +15,7 @@ from pathlib import Path
 from typing import Dict, Optional, Any, List, Tuple
 
 import pymupdf
+from pyguiadapter.adapter import GUIAdapter
 from pyguiadapter.adapter.ucontext import is_function_cancelled
 from pyguiadapter.adapter.uprogress import (
     show_progressbar,
@@ -329,7 +338,6 @@ def pdf2images(
             update_progress(finished_count)
             _print_page_result(page_result, verbose=verbose)
 
-        # TODO: process task results
         task_results = session.results()
         for task_name, task_result in task_results.items():
             _print_task_result(task_name, task_result, verbose=verbose)
@@ -341,8 +349,9 @@ def pdf2images(
         pprint(f"Finished in {time_eclipsed:.2f} seconds", verbose=verbose)
 
         if open_output_dir:
-            print(output_dirpath)
             show_in_file_manager(output_dirpath)
+
+        gc.collect()
 
 
 def _print_page_result(page_result: PageMessage, verbose: bool = True):
@@ -490,3 +499,18 @@ EXEC_WINDOW_CONFIG = FnExecuteWindowConfig(
     print_function_error=False,
     output_dock_initial_size=(None, DEFAULT_OUTPUT_BROWSER_HEIGHT),
 )
+
+# --------------------------------Add the function to GUIAdapter instance------------------------------------------------
+
+
+def use(adapter: GUIAdapter):
+    adapter.add(
+        pdf2images,
+        cancelable=FUNC_CANCELLABLE,
+        display_name=FUNC_DISPLAY_NAME,
+        document=FUNC_DOCUMENT,
+        document_format=FUNC_DOCUMENT_FORMAT,
+        icon=FUNC_ICON,
+        widget_configs=WIDGET_CONFIGS,
+        window_config=EXEC_WINDOW_CONFIG,
+    )
