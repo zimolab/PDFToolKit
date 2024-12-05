@@ -80,3 +80,7 @@ def show_in_file_manager(file_path: str):
             subprocess.call(["xdg-open", file_path])
     except Exception as e:
         print(f"Error showing file in file manager: {e}", file=sys.stderr)
+
+
+def get_cup_count() -> int:
+    return os.cpu_count() or 1
