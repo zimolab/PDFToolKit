@@ -8,5 +8,5 @@ This application uses the PyMuPDF library to process PDF files.
 Now, the following tools are available:
 
 - **PDF to Images Converter**: This tool is used to convert specific pages of a PDF file into a set of image files.
-
+- **Images to PDF Converter**: This tool is used to convert a set of image files into a single PDF file.
 
