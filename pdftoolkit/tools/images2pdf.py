@@ -26,7 +26,8 @@ from pyguiadapter.widgets import DictEditConfig
 from pyguiadapter.windows import DocumentBrowserConfig
 from pyguiadapter.windows.fnexec import FnExecuteWindowConfig, OutputBrowserConfig
 
-from ..commons.constants import APP_NAME
+from ..commons.app_meta import APP_NAME
+from ..commons.app_translation import t
 from ..commons.ui.window import (
     DEFAULT_WINDOW_SIZE,
     DEFAULT_OUTPUT_BROWSER_FONT_SIZE,
@@ -239,8 +240,10 @@ def images2pdf(
 
 
 # ----------------------------------Below are the window and widgets configuration codes--------------------------------
+_T = "app.tools"
+
 FUNC_DISPLAY_NAME = "Images to PDF"
-FUNC_GROUP_NAME = "Converters"
+FUNC_GROUP_NAME = t(f"{_T}.group_converters")
 
 PARAM_GROUP_MAIN = "Main"
 PARAM_GROUP_METADATA = "Metadata"

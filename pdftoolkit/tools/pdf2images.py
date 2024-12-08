@@ -15,6 +15,13 @@ from pathlib import Path
 from typing import Dict, Optional, Any, List, Tuple
 
 import pymupdf
+from py_multitasking import (
+    TaskContext,
+    with_process_pool_executor,
+    Scopes,
+    Scope,
+    TaskResult,
+)
 from pyguiadapter.adapter import GUIAdapter
 from pyguiadapter.adapter.ucontext import is_function_cancelled
 from pyguiadapter.adapter.uprogress import (
@@ -22,6 +29,7 @@ from pyguiadapter.adapter.uprogress import (
     update_progress,
     hide_progressbar,
 )
+from pyguiadapter.extend_types import file_t, directory_t
 from pyguiadapter.widgets import (
     FileSelectConfig,
     DirSelectConfig,
@@ -34,27 +42,25 @@ from pyguiadapter.widgets import (
 from pyguiadapter.windows import DocumentBrowserConfig
 from pyguiadapter.windows.fnexec import FnExecuteWindowConfig, OutputBrowserConfig
 from pymupdf import TOOLS
-from py_multitasking import (
-    TaskContext,
-    with_process_pool_executor,
-    Scopes,
-    Scope,
-    TaskResult,
-)
-from pyguiadapter.extend_types import file_t, directory_t
 
-from ..commons import utils
-from ..commons.constants import PACKAGE_ROOT
+from ..commons.app_translation import t, LOCALES_DIR
+from ..commons.context_variables import runtime, dtime, rand
 from ..commons.ui.window import (
     DEFAULT_WINDOW_SIZE,
     DEFAULT_OUTPUT_BROWSER_HEIGHT,
     DEFAULT_OUTPUT_BROWSER_FONT_SIZE,
     DEFAULT_DOCUMENT_BROWSER_FONT_SIZE,
 )
-from ..commons.utils import pprint, show_in_file_manager
+from ..commons.utils import (
+    pprint,
+    show_in_file_manager,
+    read_file,
+    cwd,
+    makedirs,
+    close_safely,
+)
 from ..commons.validators.basic import ensure_non_empty_string, ensure_in_range
 from ..commons.validators.filepath import ensure_file_exists
-from ..commons.variables import runtime, dtime, rand
 from ..core.filename_generator import FilenameGenerator
 from ..core.page_iterator import ALL_PAGES, PageIterator, ODD_PAGES, EVEN_PAGES
 from ..core.workloads_distributor import distribute_evenly
@@ -124,7 +130,7 @@ def build_filename_context(input_file_path: Path, page_count: int) -> Dict[str, 
         **dtime.VARIABLES,
         **rand.VARIABLES,
         runtime.VARNAME_TOTAL: page_count,
-        runtime.VARNAME_CWD_DIR: utils.cwd(),
+        runtime.VARNAME_CWD_DIR: cwd(),
         runtime.VARNAME_INPUT_FILENAME: input_file_path.name,
         runtime.VARNAME_INPUT_FILE_DIR: input_file_path.parent.absolute().as_posix(),
     }
@@ -145,7 +151,7 @@ def generate_output_filepaths(
 
         filename = filename_generator.generate(filename_format)
         output_filepath = Path(output_dirpath).joinpath(filename)
-        utils.makedirs(output_filepath.parent)
+        makedirs(output_filepath.parent)
         output_files.append((page_index, output_filepath.as_posix()))
 
     return output_files
@@ -222,7 +228,7 @@ def pdf2images_task(
     if page_exceptions:
         ret.page_exceptions = page_exceptions
 
-    utils.close_safely(document)
+    close_safely(document)
     TOOLS.store_shrink(100)
     return ret
 
@@ -273,14 +279,14 @@ def pdf2images(
     except Exception as e:
         raise RuntimeError(f"Failed to parse page ranges: {e}") from e
     finally:
-        utils.close_safely(document)
+        close_safely(document)
         TOOLS.store_shrink(100)
 
     filename_context = build_filename_context(input_file_path, page_count)
     filename_generator = FilenameGenerator(filename_context)
     output_dir = filename_generator.generate(output_dir)
     output_dirpath = Path(output_dir).absolute().as_posix()
-    utils.makedirs(output_dirpath)
+    makedirs(output_dirpath)
     output_filepaths = generate_output_filepaths(
         page_indexes=page_indexes,
         filename_generator=filename_generator,
@@ -380,18 +386,21 @@ def _print_task_result(task_name: str, task_result: TaskResult, verbose: bool = 
 
 # ----------------------------------Below are the window and widgets configuration codes--------------------------------
 
-FUNC_DOC_FILE = Path(PACKAGE_ROOT).joinpath("assets/pdf2images.html").as_posix()
+_T = "app.tools"
+_P = f"{_T}.pdf2images"
 
-FUNC_GROUP_NAME = "Converters"
+FUNC_DOC_FILE = Path(LOCALES_DIR).joinpath(t(f"{_P}.document_file")).as_posix()
+
+FUNC_GROUP_NAME = t(f"{_T}.group_converters")
 FUNC_CANCELLABLE = True
 FUNC_ICON = "fa5.images"
-FUNC_DISPLAY_NAME = "PDF to Images"
-FUNC_DOCUMENT = utils.read_file(FUNC_DOC_FILE) or "Documentation not found!"
+FUNC_DISPLAY_NAME = t(f"{_P}.display_name")
+FUNC_DOCUMENT = read_file(FUNC_DOC_FILE) or "Documentation not found!"
 FUNC_DOCUMENT_FORMAT = "html"
 
-PARAM_GROUP_MAIN = "Main"
-PARAM_GROUP_ADVANCED = "Advanced"
-PARAM_GROUP_MISC = "Misc"
+PARAM_GROUP_MAIN = t(f"{_T}.param_group_main")
+PARAM_GROUP_ADVANCED = t(f"{_T}.param_group_advanced")
+PARAM_GROUP_MISC = t(f"{_T}.param_group_misc")
 
 FILE_FILTERS = "PDF files (*.pdf);;All files (*.*)"
 
@@ -494,7 +503,12 @@ EXEC_WINDOW_CONFIG = FnExecuteWindowConfig(
     document_browser_config=DocumentBrowserConfig(
         font_size=DEFAULT_DOCUMENT_BROWSER_FONT_SIZE
     ),
-    execute_button_text="Start",
+    execute_button_text=t(f"{_T}.execute_button_text"),
+    cancel_button_text=t(f"{_T}.cancel_button_text"),
+    clear_button_text=t(f"{_T}.clear_button_text"),
+    clear_checkbox_text=t(f"{_T}.clear_checkbox_text"),
+    output_dock_title=t(f"{_T}.output_dock_title"),
+    document_dock_title=t(f"{_T}.document_dock_title"),
     default_parameter_group_name=PARAM_GROUP_MAIN,
     print_function_result=False,
     print_function_error=False,

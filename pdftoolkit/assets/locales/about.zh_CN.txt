@@ -1,0 +1,10 @@
+{app_name}是一个完全开源且免费的本地化PDF处理工具，它可以帮助您轻松地进行PDF文件的转换、合并、分割、旋转、压缩、解压、加密、解密、提取、合并等一系列操作。
+
+{app_name}构建在多个开源项目之上，包括但不限于：
+1. PyMuPDF: 一个开源的PDF处理库，{app_name}对PDF的各种操作主要基于该库。
+2. PyGUIAdapter：作者开发的一个用于为Python程序快速构建GUI界面的库，{app_name}使用该库来实现其GUI界面。
+
+作   者：{author}
+当前版本：{version}
+开源协议：{license}
+开源地址：{repo}

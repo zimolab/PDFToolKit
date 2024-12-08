@@ -1,8 +1,13 @@
+import dataclasses
+import datetime
 import os
 import subprocess
 import sys
+
+
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Generator, Union
+from typing import Optional, Generator, Union, Type
 
 from pyguiadapter.adapter import uoutput, ucontext
 
@@ -88,3 +93,20 @@ def get_cup_count() -> int:
 
 def get_username() -> Optional[str]:
     return os.getlogin() or None
+
+
+def dataclass_to_dict(obj: object) -> dict:
+    return {k: v for k, v in obj.__dict__.items() if not k.startswith("_")}
+
+
+def dataclass_from_dict(data: dict, clazz: Type[dataclasses.dataclass]) -> dataclass:
+    fields = {f.name for f in dataclasses.fields(clazz) if not f.name.startswith("_")}
+    copied = {k: v for k, v in data.items() if k in fields}
+    for k in data.keys():
+        if k not in fields:
+            copied.pop(k)
+    return clazz(**copied)
+
+
+def timestamp() -> str:
+    return datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")

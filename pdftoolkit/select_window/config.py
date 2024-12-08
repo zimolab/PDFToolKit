@@ -1,9 +1,10 @@
 from pyguiadapter.window import SimpleWindowEventListener
 from pyguiadapter.windows.fnselect import FnSelectWindowConfig, FnSelectWindow
 
-from ..commons.ui.menus import MENU_HELP
 from ..commons.ui.window import DEFAULT_WINDOW_SIZE, DEFAULT_DOCUMENT_BROWSER_WIDTH
-from ..commons.constants import APP_NAME
+from ..commons.app_meta import APP_NAME
+from .menus import MENU_HELP
+
 
 SELECT_WINDOW_CONFIG = FnSelectWindowConfig(
     title=APP_NAME,

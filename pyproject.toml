@@ -13,6 +13,8 @@ qtmodern = "^0.2.0"
 pillow = "^11.0.0"
 py-multitasking = "^0.1.1"
 
+python-i18n = "^0.3.9"
+platformdirs = "^4.3.6"
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
 

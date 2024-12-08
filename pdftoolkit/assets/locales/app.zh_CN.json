@@ -1,0 +1,33 @@
+{
+  "app_name": "PDF Toolkit",
+
+  "select_window": {
+    "about_msg_file": "about.zh_CN.txt",
+    "about_dlg_title": "关于 PDF Toolkit",
+    "license_dlg_title": "开源协议",
+    "menu": {
+      "menu_help": "帮助",
+      "action_about": "关于",
+      "action_homepage": "前往首页",
+      "action_license": "开源协议"
+    }
+  },
+  "tools": {
+    "group_converters": "转换工具",
+    "group_splitters": "分割工具",
+    "param_group_main": "主要参数",
+    "param_group_advanced": "高级参数",
+    "param_group_misc": "其他参数",
+    "clear_checkbox_text": "自动清除输出",
+    "execute_button_text": "开始执行",
+    "cancel_button_text": "终止执行",
+    "clear_button_text": "清除输出",
+    "output_dock_title": "程序输出",
+    "document_dock_title": "程序文档",
+
+    "pdf2images": {
+      "display_name": "PDF转图片",
+      "document_file": "pdf2images.zh_CN.html"
+    }
+  }
+}

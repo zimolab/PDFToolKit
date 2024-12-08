@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF转图片工具</title>
+    <style type="text/css">
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif, "Microsoft YaHei";
+            font-size: 12pt;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1 style="text-align: center;">PDF转图片工具</h1>
+    <hr>
+    <p>
+        这个工具主要用于将PDF文件页面转换为图片文件，并保存到指定目录。用户可以指定需要转换的页面范围，输出图片的格式、分辨率等参数。
+    </p>
+    <p>
+        为了充分利用现代多核CPU的计算能力，这个工具使用了多进程，可以提高转换效率，用户可以指定同时转换的进程数。同时，它还提供了进度条，
+        方便用户了解转换进度。
+        <br>
+        <br>
+        <span style="color: red;">
+            注意：一般情况下，转换进程的数量越多（不超过CPU核心数），转换的速度越快，但同时也会占用更多的系统资源（例如内存）。
+            因此，请合理设置进程数，以避免过多占用系统资源。
+        </span>
+    </p>
+</div>
+</body>
+</html>
