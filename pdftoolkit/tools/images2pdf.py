@@ -22,18 +22,38 @@ from pyguiadapter.adapter.uprogress import (
 )
 from pyguiadapter.exceptions import ParameterError
 from pyguiadapter.extend_types import file_t, file_list_t
+from pyguiadapter.widgets import DictEditConfig
 from pyguiadapter.windows import DocumentBrowserConfig
 from pyguiadapter.windows.fnexec import FnExecuteWindowConfig, OutputBrowserConfig
 
+from ..commons.constants import APP_NAME
 from ..commons.ui.window import (
     DEFAULT_WINDOW_SIZE,
     DEFAULT_OUTPUT_BROWSER_FONT_SIZE,
     DEFAULT_DOCUMENT_BROWSER_FONT_SIZE,
     DEFAULT_OUTPUT_BROWSER_HEIGHT,
 )
-from ..commons.utils import get_cup_count, close_safely
+from ..commons.utils import get_cup_count, close_safely, get_username
 from ..commons.validators.basic import ensure_non_empty_string, ensure_in_range
 from ..core.workloads_distributor import distribute_evenly
+
+
+DEFAULT_IMAGES = ""
+DEFAULT_OUTPUT_FILE = "$indir/output/output.pdf"
+DEFAULT_WORKER_COUNT = 1
+DEFAULT_METADATA = {
+    "producer": APP_NAME,
+    "author": get_username() or APP_NAME,
+    "keywords": "",
+    "creationDate": "",
+    "modDate": "",
+    "subject": "",
+    "title": "",
+    "format": "PDF 1.6",
+    "creator": APP_NAME,
+    "trapped": "",
+    "encryption": None,
+}
 
 
 @dataclass
@@ -89,12 +109,15 @@ def replace_page(
     close_safely(page_doc)
 
 
-def images2pdf(images: file_list_t, output_file: file_t, worker_count: int = 1):
+def images2pdf(
+    images: file_list_t, output_file: file_t, worker_count: int, metadata: dict
+):
     """Convert a set of images to a PDF file.
 
     :param images: A list of image file paths.
     :param output_file: The output PDF file path.
     :param worker_count: The number of worker processes. More workers may speed up the process, but may consume more memory.
+    :param metadata: The metadata of the generated PDF file.
     :return:
     """
     if not images:
@@ -201,7 +224,9 @@ def images2pdf(images: file_list_t, output_file: file_t, worker_count: int = 1):
     hide_progressbar()
 
     try:
-        doc.save(output_file)
+        if metadata:
+            doc.set_metadata(metadata)
+        doc.ez_save(output_file)
     except Exception as e:
         uprint(f"Error saving PDF file: {e}")
         raise e
@@ -215,7 +240,11 @@ def images2pdf(images: file_list_t, output_file: file_t, worker_count: int = 1):
 
 # ----------------------------------Below are the window and widgets configuration codes--------------------------------
 FUNC_DISPLAY_NAME = "Images to PDF"
+FUNC_GROUP_NAME = "Converters"
+
 PARAM_GROUP_MAIN = "Main"
+PARAM_GROUP_METADATA = "Metadata"
+PARAM_GROUP_MISC = "Misc"
 
 EXEC_WINDOW_CONFIG = FnExecuteWindowConfig(
     title=FUNC_DISPLAY_NAME,
@@ -233,7 +262,14 @@ EXEC_WINDOW_CONFIG = FnExecuteWindowConfig(
     output_dock_initial_size=(None, DEFAULT_OUTPUT_BROWSER_HEIGHT),
 )
 
-WIDGET_CONFIGS = {}
+WIDGET_CONFIGS = {
+    "metadata": DictEditConfig(
+        label="Metadata",
+        group=PARAM_GROUP_METADATA,
+        default_value=DEFAULT_METADATA,
+        height=253,
+    )
+}
 
 # --------------------------------Add the function to GUIAdapter instance------------------------------------------------
 
@@ -243,9 +279,10 @@ def use(adapter: GUIAdapter):
         images2pdf,
         cancelable=True,
         display_name=FUNC_DISPLAY_NAME,
+        group=FUNC_GROUP_NAME,
         # document=FUNC_DOCUMENT,
         # document_format=FUNC_DOCUMENT_FORMAT,
         # icon=FUNC_ICON,
-        # widget_configs=WIDGET_CONFIGS,
+        widget_configs=WIDGET_CONFIGS,
         window_config=EXEC_WINDOW_CONFIG,
     )

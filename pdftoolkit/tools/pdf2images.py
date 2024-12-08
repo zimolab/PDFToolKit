@@ -382,6 +382,7 @@ def _print_task_result(task_name: str, task_result: TaskResult, verbose: bool = 
 
 FUNC_DOC_FILE = Path(PACKAGE_ROOT).joinpath("assets/pdf2images.html").as_posix()
 
+FUNC_GROUP_NAME = "Converters"
 FUNC_CANCELLABLE = True
 FUNC_ICON = "fa5.images"
 FUNC_DISPLAY_NAME = "PDF to Images"
@@ -506,6 +507,7 @@ EXEC_WINDOW_CONFIG = FnExecuteWindowConfig(
 def use(adapter: GUIAdapter):
     adapter.add(
         pdf2images,
+        group=FUNC_GROUP_NAME,
         cancelable=FUNC_CANCELLABLE,
         display_name=FUNC_DISPLAY_NAME,
         document=FUNC_DOCUMENT,

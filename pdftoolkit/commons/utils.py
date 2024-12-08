@@ -84,3 +84,7 @@ def show_in_file_manager(file_path: str):
 
 def get_cup_count() -> int:
     return os.cpu_count() or 1
+
+
+def get_username() -> Optional[str]:
+    return os.getlogin() or None

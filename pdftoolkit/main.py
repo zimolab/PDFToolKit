@@ -9,7 +9,7 @@ from pdftoolkit.select_window.config import (
     SELECT_WINDOW_LISTENER,
     SELECT_WINDOW_MENUS,
 )
-from pdftoolkit.tools import pdf2images, images2pdf
+from pdftoolkit.tools import pdf2images, images2pdf, pdfsplitters
 
 
 def register_custom_widgets():
@@ -25,6 +25,7 @@ def main():
     adapter = GUIAdapter(on_app_start=on_app_start)
     pdf2images.use(adapter)
     images2pdf.use(adapter)
+    pdfsplitters.use(adapter)
     adapter.run(
         show_select_window=True,
         select_window_config=SELECT_WINDOW_CONFIG,
