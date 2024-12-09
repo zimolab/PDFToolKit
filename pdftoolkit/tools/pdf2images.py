@@ -124,7 +124,7 @@ class TaskReturn(object):
     fatal_exception: Optional[Exception] = None
 
 
-def build_filename_context(input_file_path: Path, page_count: int) -> Dict[str, Any]:
+def build_context(input_file_path: Path, page_count: int) -> Dict[str, Any]:
     ctx = {
         **runtime.VARIABLES,
         **dtime.VARIABLES,
@@ -137,7 +137,7 @@ def build_filename_context(input_file_path: Path, page_count: int) -> Dict[str, 
     return ctx
 
 
-def generate_output_filepaths(
+def gen_output_paths(
     page_indexes: List[int],
     filename_generator: FilenameGenerator,
     output_dirpath: str,
@@ -188,7 +188,6 @@ def pdf2images_task(
     for page_index, output_filepath in output_filepaths:
         if ctx and ctx.is_cancel_event_set():
             break
-
         try:
             page_result.page_index = page_index
             page_result.output_path = output_filepath
@@ -282,12 +281,12 @@ def pdf2images(
         close_safely(document)
         TOOLS.store_shrink(100)
 
-    filename_context = build_filename_context(input_file_path, page_count)
+    filename_context = build_context(input_file_path, page_count)
     filename_generator = FilenameGenerator(filename_context)
     output_dir = filename_generator.generate(output_dir)
     output_dirpath = Path(output_dir).absolute().as_posix()
     makedirs(output_dirpath)
-    output_filepaths = generate_output_filepaths(
+    output_filepaths = gen_output_paths(
         page_indexes=page_indexes,
         filename_generator=filename_generator,
         output_dirpath=output_dirpath,
@@ -495,13 +494,16 @@ WIDGET_CONFIGS = {
 }
 
 EXEC_WINDOW_CONFIG = FnExecuteWindowConfig(
+    always_on_top=True,
     title=FUNC_DISPLAY_NAME,
     size=DEFAULT_WINDOW_SIZE,
     output_browser_config=OutputBrowserConfig(
         font_size=DEFAULT_OUTPUT_BROWSER_FONT_SIZE
     ),
     document_browser_config=DocumentBrowserConfig(
-        font_size=DEFAULT_DOCUMENT_BROWSER_FONT_SIZE
+        font_size=DEFAULT_DOCUMENT_BROWSER_FONT_SIZE,
+        parameter_anchor=True,
+        group_anchor=True,
     ),
     execute_button_text=t(f"{_T}.execute_button_text"),
     cancel_button_text=t(f"{_T}.cancel_button_text"),

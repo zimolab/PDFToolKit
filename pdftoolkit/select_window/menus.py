@@ -1,17 +1,23 @@
 import webbrowser
 from pathlib import Path
+from typing import List, Dict
 
 from pyguiadapter.action import Action
-from pyguiadapter.utils.messagebox import show_text_content, show_about_message
-from pyguiadapter.window import BaseWindow
 from pyguiadapter.action import Separator
 from pyguiadapter.menu import Menu
+from pyguiadapter.utils import show_info_message
+from pyguiadapter.utils.messagebox import (
+    show_text_content,
+    show_about_message,
+    show_critical_message,
+)
+from pyguiadapter.window import BaseWindow
 
+from ..commons.app_config import DEFAULT_LANGUAGE_MAP, GlobalConfig, DEFAULT_LANGUAGE
 from ..commons.app_meta import APP_AUTHOR, APP_LICENSE, APP_REPOSITORY, APP_VERSION
 from ..commons.app_path import ASSETS_DIR
 from ..commons.app_translation import t, LOCALES_DIR
 from ..commons.utils import read_file
-
 
 # locale prefix
 _W = "app.select_window"
@@ -51,6 +57,39 @@ def on_action_homepage(window: BaseWindow, action: Action):
     webbrowser.open_new_tab(APP_REPOSITORY)
 
 
+def on_action_change_language(window: BaseWindow, action: Action):
+    lang_map = GlobalConfig.language_map or DEFAULT_LANGUAGE_MAP
+    code_map = {v: k for k, v in lang_map.items()}
+    lang_code = code_map.get(action.text, DEFAULT_LANGUAGE)
+    if not lang_code:
+        show_critical_message(
+            window,
+            title=t(f"app.error_dlg_title"),
+            message=t(f"{_W}.unknown_lang_msg").format(lang=action.text),
+        )
+        return
+    GlobalConfig.language = lang_code
+    GlobalConfig.save()
+    show_info_message(
+        window, title=t(f"app.success_dlg_title"), message=t(f"{_W}.lang_changed_msg")
+    )
+
+
+def _create_language_actions(
+    lang_map: Dict[str, str], current_lang: str
+) -> List[Action]:
+    actions = []
+    for lang_code, lang_name in lang_map.items():
+        action = Action(
+            text=lang_name,
+            on_triggered=on_action_change_language,
+            checkable=True,
+            checked=(lang_code == current_lang),
+        )
+        actions.append(action)
+    return actions
+
+
 ACTION_LICENSE = Action(
     text=t(f"{_M}.action_license"),
     icon="fa.file-text",
@@ -67,8 +106,19 @@ ACTION_HOMEPAGE = Action(
     on_triggered=on_action_homepage,
 )
 
+LANGUAGE_ACTIONS = _create_language_actions(
+    GlobalConfig.language_map or DEFAULT_LANGUAGE_MAP.copy(),
+    GlobalConfig.language or DEFAULT_LANGUAGE,
+)
+
 
 MENU_HELP = Menu(
     title=t(f"{_M}.menu_help"),
     actions=[ACTION_ABOUT, Separator(), ACTION_HOMEPAGE, ACTION_LICENSE],
+)
+
+MENU_LANGUAGE = Menu(
+    title=t(f"{_M}.menu_language"),
+    actions=LANGUAGE_ACTIONS,
+    exclusive=True,
 )

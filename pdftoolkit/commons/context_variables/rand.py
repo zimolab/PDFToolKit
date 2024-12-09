@@ -1,12 +1,13 @@
 import random
 import string
 import uuid as uid
+from sys import maxsize
 from typing import Dict, Any
 
-MAX_RAND_NUM = 9999999999
-MIN_RAND_NUM = 1
+MAX_RAND_NUM = maxsize
+MIN_RAND_NUM = 0
 
-RAND_STR_LEN = 10
+RAND_STR_LEN = 16
 RAND_STR_CHARS = string.ascii_letters + string.digits
 
 VARNAME_RAND_NUM = "rand"

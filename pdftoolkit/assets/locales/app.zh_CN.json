@@ -1,12 +1,18 @@
 {
   "app_name": "PDF Toolkit",
+  "error_dlg_title": "错误",
+  "success_dlg_title": "成功",
 
   "select_window": {
     "about_msg_file": "about.zh_CN.txt",
     "about_dlg_title": "关于 PDF Toolkit",
     "license_dlg_title": "开源协议",
+    "select_button_text": "选择",
+    "unknown_lang_msg": "未知的语言：{lang}",
+    "lang_changed_msg": "语言切换成功，请重启程序。",
     "menu": {
       "menu_help": "帮助",
+      "menu_language": "语言",
       "action_about": "关于",
       "action_homepage": "前往首页",
       "action_license": "开源协议"

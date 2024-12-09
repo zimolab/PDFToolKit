@@ -1,0 +1,11 @@
+{app_name} is a free and open-source PDF processing tool that can help you perform a variety of operations on PDF files, such as converting, merging, splitting, rotating, compressing, decompressing, encrypting, decrypting, extracting, and merging.
+
+{app_name} is built on top of many open-source libraries, including:
+1. PyMuPDF: an open-source library for working with PDF files
+2. PyGUIAdapter：an open-source library for creating GUI applications quickly
+3. and many more...
+
+Author：{author}
+Version：{version}
+License：{license}
+Repository：{repo}

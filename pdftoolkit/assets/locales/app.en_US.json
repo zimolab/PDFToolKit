@@ -1,0 +1,39 @@
+{
+  "app_name": "PDF Toolkit",
+  "error_dlg_title": "Error",
+  "success_dlg_title": "Success",
+
+  "select_window": {
+    "about_msg_file": "about.en_US.txt",
+    "about_dlg_title": "About PDF Toolkit",
+    "license_dlg_title": "License",
+    "select_button_text": "Select",
+    "unknown_lang_msg": "Unknown language：{lang}",
+    "lang_changed_msg": "Language has been changed, please restart the application to take effect.",
+    "menu": {
+      "menu_help": "Help",
+      "menu_language": "Language",
+      "action_about": "About",
+      "action_homepage": "Homepage",
+      "action_license": "License"
+    }
+  },
+  "tools": {
+    "group_converters": "Converters",
+    "group_splitters": "Splitters",
+    "param_group_main": "Main Parameters",
+    "param_group_advanced": "Advanced Parameters",
+    "param_group_misc": "Miscellaneous",
+    "clear_checkbox_text": "clear output before execution",
+    "execute_button_text": "Execute",
+    "cancel_button_text": "Cancel",
+    "clear_button_text": "Clear",
+    "output_dock_title": "Output",
+    "document_dock_title": "Document",
+
+    "pdf2images": {
+      "display_name": "PDF to Images",
+      "document_file": "pdf2images.en_US.html"
+    }
+  }
+}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PDF转图片工具</title>
+    <title>PDF to Images Tool</title>
     <style type="text/css">
         html {
             margin: 0;
@@ -14,19 +14,22 @@
 </head>
 <body>
 <div>
-    <h1 style="text-align: center;">PDF转图片工具</h1>
+    <h1 style="text-align: center;">PDF to Images Tool</h1>
     <hr>
     <p>
-        该工具主要用于将PDF文件页面转换为图片文件，并保存到指定目录。用户可以指定需要转换的页面范围，输出图片的格式、分辨率等参数。
+        This tool is mainly used to convert PDF pages into image files and save them to the specified directory.
+        The user can specify the page ranges to be converted, the output image format, resolution, etc.
     </p>
     <p>
-        为了充分利用现代多核CPU的计算能力，这个工具利用多进程加速转换过程，用户可以根据本机CPU核心数量设置合适的工作进程数。
-        同时，它还提供了进度条，方便用户了解直观地了解转换进度。用户亦可以取消正在进行的转换操作。
+        To fully utilize the power of multicore CPUs, this tool uses multiprocess technics to speed up the conversion process.
+        The user can set the count of worker processes according to the CPU cores. It also has a progress bar, user can easily know
+        the progress of the conversion. It also allows user to cancel the ongoing conversion process.
         <br>
         <br>
         <span style="color: red;">
-            注意：一般情况下，工作进程数量越多（在不超过CPU核心数量的情况下），转换速度越快，但也会显著地提高内存等系统资源的占用。
-            因此，用户需合理设置工作进程数，在资源占用和转换效率之间找到最佳平衡。
+            Note: Usually, more worker processes (up to the number of CPU cores) will result in faster conversion,
+            but more memory will be used during the conversion process. Therefore, please set a proper worker count to achieve
+            the best balance between resource usage and conversion efficiency.
         </span>
     </p>
     <hr>

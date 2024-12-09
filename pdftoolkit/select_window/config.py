@@ -1,15 +1,18 @@
 from pyguiadapter.window import SimpleWindowEventListener
 from pyguiadapter.windows.fnselect import FnSelectWindowConfig, FnSelectWindow
 
+from ..commons.app_translation import t
 from ..commons.ui.window import DEFAULT_WINDOW_SIZE, DEFAULT_DOCUMENT_BROWSER_WIDTH
 from ..commons.app_meta import APP_NAME
-from .menus import MENU_HELP
+from .menus import MENU_HELP, MENU_LANGUAGE
 
+_P = "app.select_window"
 
 SELECT_WINDOW_CONFIG = FnSelectWindowConfig(
     title=APP_NAME,
     icon="fa5s.file-pdf",
     size=DEFAULT_WINDOW_SIZE,
+    select_button_text=t(f"{_P}.select_button_text"),
     document_browser_width=DEFAULT_DOCUMENT_BROWSER_WIDTH,
 )
 
@@ -43,4 +46,4 @@ SELECT_WINDOW_LISTENER = SimpleWindowEventListener(
 )
 
 
-SELECT_WINDOW_MENUS = (MENU_HELP,)
+SELECT_WINDOW_MENUS = (MENU_HELP, MENU_LANGUAGE)

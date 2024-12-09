@@ -66,13 +66,31 @@ def close_safely(obj, output_stderr: bool = False):
             print(f"Error closing {obj}: {e}", file=sys.stderr)
 
 
-def read_file(file_path: str, encoding: str = "utf-8") -> Optional[str]:
+def read_file(
+    filepath: str, encoding: str = "utf-8", no_raise: bool = True
+) -> Optional[str]:
     try:
-        with open(file_path, "r", encoding=encoding) as f:
+        with open(filepath, "r", encoding=encoding) as f:
             return f.read()
     except Exception as e:
-        print(f"Error reading file {file_path}: {e}", file=sys.stderr)
-        return None
+        if no_raise:
+            print(f"Error reading file {filepath}: {e}", file=sys.stderr)
+            return None
+        else:
+            raise e
+
+
+def write_file(
+    filepath: str, content: str, encoding: str = "utf-8", no_raise: bool = True
+):
+    try:
+        with open(filepath, "w", encoding=encoding) as f:
+            f.write(content)
+    except Exception as e:
+        if no_raise:
+            print(f"Error writing file {filepath}: {e}", file=sys.stderr)
+        else:
+            raise e
 
 
 def show_in_file_manager(file_path: str):
