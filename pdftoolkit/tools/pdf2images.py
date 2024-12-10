@@ -38,12 +38,13 @@ from pyguiadapter.widgets import (
     ChoiceBoxConfig,
     IntSpinBoxConfig,
     BoolBoxConfig,
+    EnumSelectConfig,
 )
 from pyguiadapter.windows import DocumentBrowserConfig
 from pyguiadapter.windows.fnexec import FnExecuteWindowConfig, OutputBrowserConfig
 from pymupdf import TOOLS
 
-from ..commons.app_translation import t, LOCALES_DIR
+from ..commons.app_translation import t, LOCALES_DIR, param_name_t, tools_t
 from ..commons.context_variables import runtime, dtime, rand
 from ..commons.ui.window import (
     DEFAULT_WINDOW_SIZE,
@@ -385,44 +386,46 @@ def _print_task_result(task_name: str, task_result: TaskResult, verbose: bool = 
 
 # ----------------------------------Below are the window and widgets configuration codes--------------------------------
 
-_T = "app.tools"
-_P = f"{_T}.pdf2images"
 
-FUNC_DOC_FILE = Path(LOCALES_DIR).joinpath(t(f"{_P}.document_file")).as_posix()
+def _this_t(key: str, prefix: str = "app.tools.pdf2images", **kwargs):
+    return t(key, prefix=prefix, **kwargs)
 
-FUNC_GROUP_NAME = t(f"{_T}.group_converters")
+
+FUNC_DOC_FILE = Path(LOCALES_DIR).joinpath(_this_t("document_file")).as_posix()
+
+FUNC_GROUP_NAME = tools_t("group_converters")
 FUNC_CANCELLABLE = True
 FUNC_ICON = "fa5.images"
-FUNC_DISPLAY_NAME = t(f"{_P}.display_name")
+FUNC_DISPLAY_NAME = _this_t("display_name")
 FUNC_DOCUMENT = read_file(FUNC_DOC_FILE) or "Documentation not found!"
 FUNC_DOCUMENT_FORMAT = "html"
 
-PARAM_GROUP_MAIN = t(f"{_T}.param_group_main")
-PARAM_GROUP_ADVANCED = t(f"{_T}.param_group_advanced")
-PARAM_GROUP_MISC = t(f"{_T}.param_group_misc")
+PARAM_GROUP_MAIN = tools_t("param_group_main")
+PARAM_GROUP_ADVANCED = tools_t("param_group_advanced")
+PARAM_GROUP_MISC = tools_t(f"param_group_misc")
 
 FILE_FILTERS = "PDF files (*.pdf);;All files (*.*)"
 
 WIDGET_CONFIGS = {
     "input_file": FileSelectConfig(
-        label="Input File",
+        label=param_name_t("input_file"),
         default_value=DEFAULT_INPUT_FILE,
         filters=FILE_FILTERS,
     ),
     "output_dir": DirSelectConfig(
-        label="Output Directory",
+        label=param_name_t("output_dir"),
         default_value=DEFAULT_OUTPUT_DIR,
     ),
     "filename_format": LineEditConfig(
-        label="Filename Format",
+        label=param_name_t("filename_format"),
         default_value=DEFAULT_FILENAME_FORMAT,
     ),
-    "DuplicatePolicy": ExclusiveChoiceBoxConfig(
-        label="Duplicate File Policy",
+    "duplicate_policy": EnumSelectConfig(
+        label=param_name_t("duplicate_policy"),
         default_value=DEFAULT_DUPLICATE_POLICY,
     ),
     "page_ranges": ChoiceBoxConfig(
-        label="Page Ranges",
+        label=param_name_t("page_ranges"),
         choices={
             "All Pages": ALL_PAGES,
             "Odd Pages": ODD_PAGES,
@@ -432,7 +435,7 @@ WIDGET_CONFIGS = {
         add_user_input=False,
     ),
     "dpi": IntSpinBoxConfig(
-        label="DPI",
+        label=param_name_t("dpi"),
         default_value=DEFAULT_DPI,
         min_value=MIN_DPI,
         max_value=MAX_DPI,
@@ -440,14 +443,14 @@ WIDGET_CONFIGS = {
         group=PARAM_GROUP_ADVANCED,
     ),
     "alpha": BoolBoxConfig(
-        label="Alpha Channel",
+        label=param_name_t("alpha"),
         default_value=DEFAULT_ALPHA,
         true_text="Enabled",
         false_text="Disabled",
         group=PARAM_GROUP_ADVANCED,
     ),
     "rotation": IntSpinBoxConfig(
-        label="Rotation",
+        label=param_name_t("rotation"),
         default_value=DEFAULT_ROTATION,
         default_value_description="No rotation",
         min_value=0,
@@ -456,21 +459,21 @@ WIDGET_CONFIGS = {
         group=PARAM_GROUP_ADVANCED,
     ),
     "colorspace": ExclusiveChoiceBoxConfig(
-        label="Colorspace",
+        label=param_name_t("colorspace"),
         default_value=DEFAULT_COLORSPACE,
         default_value_description="Auto",
         choices=[CS_RGB, CS_GRAY, CS_CMYK],
         group=PARAM_GROUP_ADVANCED,
     ),
     "annots": BoolBoxConfig(
-        label="Annotations",
+        label=param_name_t("annots"),
         default_value=DEFAULT_ANNOTS,
         true_text="Render",
         false_text="Suppress",
         group=PARAM_GROUP_ADVANCED,
     ),
     "worker_count": IntSpinBoxConfig(
-        label="Workers",
+        label=param_name_t("worker_count"),
         default_value=DEFAULT_WORKER_COUNT,
         min_value=1,
         step=1,
@@ -478,14 +481,14 @@ WIDGET_CONFIGS = {
         group=PARAM_GROUP_MISC,
     ),
     "verbose": BoolBoxConfig(
-        label="Verbose",
+        label=param_name_t("verbose"),
         default_value=DEFAULT_VERBOSE,
         true_text="Enabled",
         false_text="Disabled",
         group=PARAM_GROUP_MISC,
     ),
     "open_output_dir": BoolBoxConfig(
-        label="Open Output Directory",
+        label=param_name_t("open_output_dir"),
         default_value=DEFAULT_OPEN_OUTPUT_DIR,
         true_text="Yes",
         false_text="No",
@@ -494,7 +497,7 @@ WIDGET_CONFIGS = {
 }
 
 EXEC_WINDOW_CONFIG = FnExecuteWindowConfig(
-    always_on_top=True,
+    always_on_top=False,
     title=FUNC_DISPLAY_NAME,
     size=DEFAULT_WINDOW_SIZE,
     output_browser_config=OutputBrowserConfig(
@@ -505,12 +508,12 @@ EXEC_WINDOW_CONFIG = FnExecuteWindowConfig(
         parameter_anchor=True,
         group_anchor=True,
     ),
-    execute_button_text=t(f"{_T}.execute_button_text"),
-    cancel_button_text=t(f"{_T}.cancel_button_text"),
-    clear_button_text=t(f"{_T}.clear_button_text"),
-    clear_checkbox_text=t(f"{_T}.clear_checkbox_text"),
-    output_dock_title=t(f"{_T}.output_dock_title"),
-    document_dock_title=t(f"{_T}.document_dock_title"),
+    execute_button_text=tools_t("execute_button_text"),
+    cancel_button_text=tools_t("cancel_button_text"),
+    clear_button_text=tools_t("clear_button_text"),
+    clear_checkbox_text=tools_t("clear_checkbox_text"),
+    output_dock_title=tools_t("output_dock_title"),
+    document_dock_title=tools_t("document_dock_title"),
     default_parameter_group_name=PARAM_GROUP_MAIN,
     print_function_result=False,
     print_function_error=False,

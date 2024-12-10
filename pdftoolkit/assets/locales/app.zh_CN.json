@@ -10,6 +10,7 @@
     "select_button_text": "选择",
     "unknown_lang_msg": "未知的语言：{lang}",
     "lang_changed_msg": "语言切换成功，请重启程序。",
+
     "menu": {
       "menu_help": "帮助",
       "menu_language": "语言",
@@ -39,5 +40,20 @@
       "display_name": "PDF转图片",
       "document_file": "pdf2images.zh_CN.html"
     }
+  },
+  "param_names": {
+    "input_file": "输入文件",
+    "output_dir": "输出目录",
+    "filename_format": "输出文件名",
+    "duplicate_policy": "重复文件处理策略",
+    "page_ranges": "页码范围",
+    "dpi": "分辨率",
+    "alpha": "Alpha通道",
+    "rotation": "旋转角度",
+    "colorspace": "色彩空间",
+    "annots": "注解",
+    "worker_count": "工作进程数",
+    "verbose": "详细信息",
+    "open_output_dir": "打开输出目录"
   }
 }

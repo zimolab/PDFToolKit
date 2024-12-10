@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import i18n
 
@@ -18,17 +19,29 @@ def _init_i18n():
     i18n.set("locale", GlobalConfig.language)
 
 
-def set_language(language: str, update_config: bool = True):
-    i18n.set("locale", language)
-    if update_config:
-        GlobalConfig.language = language
-        GlobalConfig.save()
-
-
-def get_language() -> str:
-    return i18n.get("locale")
-
-
 _init_i18n()
 
-t = i18n.t
+
+def t(key: str, prefix: Optional[str] = None, **kwargs):
+    full_key = key
+    if prefix:
+        full_key = f"{prefix}.{key}"
+    return i18n.t(full_key, **kwargs)
+
+
+def app_t(key: str, prefix: Optional[str] = "app", **kwargs):
+    return t(key, prefix, **kwargs)
+
+
+def select_win_t(key: str, prefix: Optional[str] = "app.select_window", **kwargs):
+    return t(key, prefix, **kwargs)
+
+
+def tools_t(key: str, prefix: Optional[str] = "app.tools", **kwargs):
+    return t(key, prefix, **kwargs)
+
+
+def param_name_t(
+    param_name: str, prefix: Optional[str] = "app.param_names", **kwargs
+) -> str:
+    return t(param_name, prefix, **kwargs)

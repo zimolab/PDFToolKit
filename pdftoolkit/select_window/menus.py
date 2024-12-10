@@ -23,12 +23,12 @@ from ..commons.app_config import (
 )
 from ..commons.app_meta import APP_AUTHOR, APP_LICENSE, APP_REPOSITORY, APP_VERSION
 from ..commons.app_path import ASSETS_DIR
-from ..commons.app_translation import t, LOCALES_DIR
+from ..commons.app_translation import t, LOCALES_DIR, select_win_t, app_t
 from ..commons.utils import read_file, unused
 
-# locale prefix
-_W = "app.select_window"
-_M = f"{_W}.menu"
+
+def _menu_t(key: str, prefix: str = "app.select_window.menu", **kwargs):
+    return select_win_t(key, prefix=prefix, **kwargs)
 
 
 # noinspection PyUnusedLocal
@@ -41,14 +41,14 @@ def on_action_license(window: BaseWindow, action: Action):
         window,
         text_content=license_content,
         text_format="plaintext",
-        title=t(f"{_W}.license_dlg_title") + " - " + APP_LICENSE,
+        title=select_win_t("license_dlg_title") + " - " + APP_LICENSE,
         icon="fa.file-text",
     )
 
 
 # noinspection PyUnusedLocal
 def on_action_about(window: BaseWindow, action: Action):
-    about_message_file = Path(LOCALES_DIR).joinpath(t(f"{_W}.about_msg_file"))
+    about_message_file = Path(LOCALES_DIR).joinpath(select_win_t("about_msg_file"))
     about_message = read_file(about_message_file.as_posix()).format(
         app_name=t("app.app_name"),
         author=APP_AUTHOR,
@@ -56,7 +56,9 @@ def on_action_about(window: BaseWindow, action: Action):
         license=APP_LICENSE,
         repo=APP_REPOSITORY,
     )
-    show_about_message(window, title=t(f"{_W}.about_dlg_title"), message=about_message)
+    show_about_message(
+        window, title=select_win_t("about_dlg_title"), message=about_message
+    )
 
 
 # noinspection PyUnusedLocal
@@ -69,15 +71,17 @@ def on_action_change_language(window: BaseWindow, action: Action):
     if not lang_code:
         show_critical_message(
             window,
-            title=t(f"app.error_dlg_title"),
-            message=t(f"{_W}.unknown_lang_msg").format(lang=action.text),
+            title=app_t(f"error_dlg_title"),
+            message=select_win_t("unknown_lang_msg").format(lang=action.text),
         )
         return
     i18n.set("locale", lang_code)
     GlobalConfig.language = lang_code
     GlobalConfig.save()
     show_info_message(
-        window, title=t(f"app.success_dlg_title"), message=t(f"{_W}.lang_changed_msg")
+        window,
+        title=app_t("success_dlg_title"),
+        message=select_win_t("lang_changed_msg"),
     )
 
 
@@ -106,17 +110,17 @@ def _create_language_actions() -> List[Action]:
 
 
 ACTION_LICENSE = Action(
-    text=t(f"{_M}.action_license"),
+    text=_menu_t("action_license"),
     icon="fa.file-text",
     on_triggered=on_action_license,
 )
 ACTION_ABOUT = Action(
-    text=t(f"{_M}.action_about"),
+    text=_menu_t("action_about"),
     icon="fa.info-circle",
     on_triggered=on_action_about,
 )
 ACTION_HOMEPAGE = Action(
-    text=t(f"{_M}.action_homepage"),
+    text=_menu_t("action_homepage"),
     icon="fa.home",
     on_triggered=on_action_homepage,
 )
@@ -127,21 +131,21 @@ LANGUAGE_ACTIONS = _create_language_actions()
 _current_theme, _ = get_theme_safely(GlobalConfig.theme)
 
 ACTION_THEME_AUTO = Action(
-    text=t(f"{_M}.action_theme_auto"),
+    text=_menu_t(f"action_theme_auto"),
     checkable=True,
     checked=(_current_theme == "auto"),
     on_triggered=on_action_change_theme,
     data="auto",
 )
 ACTION_THEME_LIGHT = Action(
-    text=t(f"{_M}.action_theme_light"),
+    text=_menu_t("action_theme_light"),
     checkable=True,
     checked=(_current_theme == "light"),
     on_triggered=on_action_change_theme,
     data="light",
 )
 ACTION_THEME_DARK = Action(
-    text=t(f"{_M}.action_theme_dark"),
+    text=_menu_t("action_theme_dark"),
     checkable=True,
     checked=(_current_theme == "dark"),
     on_triggered=on_action_change_theme,
@@ -149,18 +153,18 @@ ACTION_THEME_DARK = Action(
 )
 
 MENU_HELP = Menu(
-    title=t(f"{_M}.menu_help"),
+    title=_menu_t("menu_help"),
     actions=[ACTION_ABOUT, Separator(), ACTION_HOMEPAGE, ACTION_LICENSE],
 )
 
 MENU_LANGUAGE = Menu(
-    title=t(f"{_M}.menu_language"),
+    title=_menu_t("menu_language"),
     actions=LANGUAGE_ACTIONS,
     exclusive=True,
 )
 
 MENU_THEME = Menu(
-    title=t(f"{_M}.menu_theme"),
+    title=_menu_t("menu_theme"),
     actions=[
         ACTION_THEME_AUTO,
         ACTION_THEME_LIGHT,

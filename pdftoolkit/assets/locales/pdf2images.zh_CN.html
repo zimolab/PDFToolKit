@@ -8,7 +8,7 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif, "Microsoft YaHei";
-            font-size: 12pt;
+            font-size: 11pt;
         }
     </style>
 </head>
@@ -52,28 +52,31 @@
                 待转换的页面范围，支持逗号分隔的页面范围，如“1,3,5-7”。
                 "All Pages"表示转换整个PDF文件，"Odd Pages"表示转换奇数页，"Even Pages"表示转换偶数页。
             </li>
-            <li><a href="#param=dpi"><b>输出图片分辨率: </b></a>
+            <li><a href="#param=dpi"><b>分辨率: </b></a>
             输出图片的分辨率，单位为DPI（每英寸点数）。DPI越高，输出图片越清晰，但占用磁盘空间也越大，且生成图片时占用的内存也越多。
             默认为值300。允许的最小值为72， 最大值为7000。
             </li>
-            <li><a href="#param=alpha"><b>输出图片Alpha通道: </b></a>
+            <li><a href="#param=alpha"><b>Alpha通道: </b></a>
                 该参数用于指定输出图片是否包含Alpha通道。
             </li>
-            <li><a href="#param=rotation"><b>输出图片旋转角度: </b></a>
+            <li><a href="#param=rotation"><b>旋转角度: </b></a>
                 该参数用于指定输出图片的旋转角度，单位为度，允许的值为0、90、180、270、360。
             </li>
-            <li><a href="#param=colorspace"><b>输出图片色彩空间: </b></a>
+            <li><a href="#param=colorspace"><b>色彩空间: </b></a>
                 该参数用于指定输出图片的色彩空间，支持"RGB"、"CMYK"、"GRAY"。
             </li>
-            <li><a href="#param=annots"><b>是否渲染PDF注解: </b></a>
+            <li><a href="#param=annots"><b>注解: </b></a>
                 该参数用于指定是否渲染PDF页面中的注解。
             </li>
             <li><a href="#param=worker_count"><b>工作进程数: </b></a>
                 该参数用于指定是工作进程的数量，一般情况下，工作进程数量越多（在不超过CPU核心数量的情况下），转换速度越快，
                 但也会显著地提高内存等系统资源的占用。 因此，用户需合理设置工作进程数，在资源占用和转换效率之间找到最佳平衡。
             </li>
-            <li><a href="#param=open_output_dir"><b>是否打开输出目录: </b></a>
-                该参数用于指定是否在转换完成后打开输出目录。
+            <li><a href="#param=verbose"><b>详细信息: </b></a>
+                该参数用于指定是否在输出浏览器中打印程序运行过程中的输出。
+            </li>
+            <li><a href="#param=open_output_dir"><b>打开输出目录: </b></a>
+                该参数用于指定是否在程序运行结束后打开输出目录。
             </li>
         </ul>
     </div>
