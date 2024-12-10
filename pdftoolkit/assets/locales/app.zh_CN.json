@@ -13,9 +13,13 @@
     "menu": {
       "menu_help": "帮助",
       "menu_language": "语言",
+      "menu_theme": "主题",
       "action_about": "关于",
       "action_homepage": "前往首页",
-      "action_license": "开源协议"
+      "action_license": "开源协议",
+      "action_theme_auto": "跟随系统",
+      "action_theme_light": "浅色主题",
+      "action_theme_dark": "深色主题"
     }
   },
   "tools": {

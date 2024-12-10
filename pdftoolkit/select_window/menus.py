@@ -1,7 +1,9 @@
 import webbrowser
 from pathlib import Path
-from typing import List, Dict
+from typing import List, cast
 
+import i18n
+import qdarktheme
 from pyguiadapter.action import Action
 from pyguiadapter.action import Separator
 from pyguiadapter.menu import Menu
@@ -13,11 +15,16 @@ from pyguiadapter.utils.messagebox import (
 )
 from pyguiadapter.window import BaseWindow
 
-from ..commons.app_config import DEFAULT_LANGUAGE_MAP, GlobalConfig, DEFAULT_LANGUAGE
+from ..commons.app_config import (
+    GlobalConfig,
+    DEFAULT_LANGUAGE,
+    get_theme_safely,
+    get_language_map,
+)
 from ..commons.app_meta import APP_AUTHOR, APP_LICENSE, APP_REPOSITORY, APP_VERSION
 from ..commons.app_path import ASSETS_DIR
 from ..commons.app_translation import t, LOCALES_DIR
-from ..commons.utils import read_file
+from ..commons.utils import read_file, unused
 
 # locale prefix
 _W = "app.select_window"
@@ -58,9 +65,7 @@ def on_action_homepage(window: BaseWindow, action: Action):
 
 
 def on_action_change_language(window: BaseWindow, action: Action):
-    lang_map = GlobalConfig.language_map or DEFAULT_LANGUAGE_MAP
-    code_map = {v: k for k, v in lang_map.items()}
-    lang_code = code_map.get(action.text, DEFAULT_LANGUAGE)
+    lang_code = action.data or DEFAULT_LANGUAGE
     if not lang_code:
         show_critical_message(
             window,
@@ -68,6 +73,7 @@ def on_action_change_language(window: BaseWindow, action: Action):
             message=t(f"{_W}.unknown_lang_msg").format(lang=action.text),
         )
         return
+    i18n.set("locale", lang_code)
     GlobalConfig.language = lang_code
     GlobalConfig.save()
     show_info_message(
@@ -75,16 +81,25 @@ def on_action_change_language(window: BaseWindow, action: Action):
     )
 
 
-def _create_language_actions(
-    lang_map: Dict[str, str], current_lang: str
-) -> List[Action]:
+def on_action_change_theme(window: BaseWindow, action: Action):
+    unused(window)
+    theme, _ = get_theme_safely(cast(str, action.data))
+    qdarktheme.setup_theme(theme)
+    GlobalConfig.theme = theme
+    GlobalConfig.save()
+
+
+def _create_language_actions() -> List[Action]:
+    lang_map = get_language_map(GlobalConfig.language_map)
+    cur_lang = GlobalConfig.language or DEFAULT_LANGUAGE
     actions = []
     for lang_code, lang_name in lang_map.items():
         action = Action(
             text=lang_name,
             on_triggered=on_action_change_language,
             checkable=True,
-            checked=(lang_code == current_lang),
+            checked=(lang_code == cur_lang),
+            data=lang_code,
         )
         actions.append(action)
     return actions
@@ -106,11 +121,32 @@ ACTION_HOMEPAGE = Action(
     on_triggered=on_action_homepage,
 )
 
-LANGUAGE_ACTIONS = _create_language_actions(
-    GlobalConfig.language_map or DEFAULT_LANGUAGE_MAP.copy(),
-    GlobalConfig.language or DEFAULT_LANGUAGE,
-)
+LANGUAGE_ACTIONS = _create_language_actions()
 
+
+_current_theme, _ = get_theme_safely(GlobalConfig.theme)
+
+ACTION_THEME_AUTO = Action(
+    text=t(f"{_M}.action_theme_auto"),
+    checkable=True,
+    checked=(_current_theme == "auto"),
+    on_triggered=on_action_change_theme,
+    data="auto",
+)
+ACTION_THEME_LIGHT = Action(
+    text=t(f"{_M}.action_theme_light"),
+    checkable=True,
+    checked=(_current_theme == "light"),
+    on_triggered=on_action_change_theme,
+    data="light",
+)
+ACTION_THEME_DARK = Action(
+    text=t(f"{_M}.action_theme_dark"),
+    checkable=True,
+    checked=(_current_theme == "dark"),
+    on_triggered=on_action_change_theme,
+    data="dark",
+)
 
 MENU_HELP = Menu(
     title=t(f"{_M}.menu_help"),
@@ -120,5 +156,15 @@ MENU_HELP = Menu(
 MENU_LANGUAGE = Menu(
     title=t(f"{_M}.menu_language"),
     actions=LANGUAGE_ACTIONS,
+    exclusive=True,
+)
+
+MENU_THEME = Menu(
+    title=t(f"{_M}.menu_theme"),
+    actions=[
+        ACTION_THEME_AUTO,
+        ACTION_THEME_LIGHT,
+        ACTION_THEME_DARK,
+    ],
     exclusive=True,
 )

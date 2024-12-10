@@ -6,15 +6,15 @@ authors = ["zimolab <zimolab@aliyun.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11, <3.13"
-pyguiadapter = "^1.0.5"
+python = "^3.11, <3.12"
+pyguiadapter = "^1.0.6"
 pymupdf = "^1.24.13"
-qtmodern = "^0.2.0"
 pillow = "^11.0.0"
 py-multitasking = "^0.1.1"
 
 python-i18n = "^0.3.9"
 platformdirs = "^4.3.6"
+pyqtdarktheme = "^2.1.0"
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
 

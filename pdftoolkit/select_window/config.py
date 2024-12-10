@@ -4,7 +4,7 @@ from pyguiadapter.windows.fnselect import FnSelectWindowConfig, FnSelectWindow
 from ..commons.app_translation import t
 from ..commons.ui.window import DEFAULT_WINDOW_SIZE, DEFAULT_DOCUMENT_BROWSER_WIDTH
 from ..commons.app_meta import APP_NAME
-from .menus import MENU_HELP, MENU_LANGUAGE
+from .menus import MENU_HELP, MENU_LANGUAGE, MENU_THEME
 
 _P = "app.select_window"
 
@@ -46,4 +46,4 @@ SELECT_WINDOW_LISTENER = SimpleWindowEventListener(
 )
 
 
-SELECT_WINDOW_MENUS = (MENU_HELP, MENU_LANGUAGE)
+SELECT_WINDOW_MENUS = (MENU_LANGUAGE, MENU_THEME, MENU_HELP)

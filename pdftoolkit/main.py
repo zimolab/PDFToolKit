@@ -1,11 +1,11 @@
-import qtmodern.styles
+import qdarktheme
 from pyguiadapter.adapter import GUIAdapter
 from pyguiadapter.widgets import ParameterWidgetFactory
 from qtpy.QtWidgets import QApplication
 
-from pdftoolkit.commons.app_config import GlobalConfig
+from pdftoolkit.commons.app_config import GlobalConfig, get_theme_safely
 from pdftoolkit.commons.ui.rect_widget import RectWidget, rect_tuple_t
-from pdftoolkit.commons.utils import timestamp
+from pdftoolkit.commons.utils import timestamp, unused
 from pdftoolkit.select_window.config import (
     SELECT_WINDOW_CONFIG,
     SELECT_WINDOW_LISTENER,
@@ -26,7 +26,12 @@ def register_custom_widgets():
 
 
 def on_app_start(app: QApplication):
-    qtmodern.styles.light(app)
+    unused(app)
+    theme, ok = get_theme_safely(GlobalConfig.theme)
+    if not ok:
+        GlobalConfig.theme = theme
+        GlobalConfig.save()
+    qdarktheme.setup_theme(theme)
 
 
 def main():

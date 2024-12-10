@@ -13,9 +13,13 @@
     "menu": {
       "menu_help": "Help",
       "menu_language": "Language",
+      "menu_theme": "Theme",
       "action_about": "About",
       "action_homepage": "Homepage",
-      "action_license": "License"
+      "action_license": "License",
+      "action_theme_auto": "Auto Theme",
+      "action_theme_light": "Light Theme",
+      "action_theme_dark": "Dark Theme"
     }
   },
   "tools": {

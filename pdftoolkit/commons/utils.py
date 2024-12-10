@@ -7,7 +7,7 @@ import sys
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Generator, Union, Type
+from typing import Optional, Generator, Union, Type, Any
 
 from pyguiadapter.adapter import uoutput, ucontext
 
@@ -128,3 +128,7 @@ def dataclass_from_dict(data: dict, clazz: Type[dataclasses.dataclass]) -> datac
 
 def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+
+
+def unused(arg: Any):
+    _ = arg
