@@ -15,6 +15,7 @@ py-multitasking = "^0.1.1"
 python-i18n = "^0.3.9"
 platformdirs = "^4.3.6"
 pyqtdarktheme = "^2.1.0"
+loguru = "^0.7.3"
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
 

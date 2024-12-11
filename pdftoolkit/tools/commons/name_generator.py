@@ -6,11 +6,9 @@ from typing import Dict, Any, Callable, Union, Mapping
 FilterFunc = Callable[[Dict[str, Any]], str]
 
 
-class FilenameGenerator(object):
+class NameGenerator(object):
     def __init__(
-        self,
-        context: Dict[str, Union[Any, FilterFunc]] = None,
-        sys_env: bool = True,
+        self, context: Dict[str, Union[Any, FilterFunc]] = None, sys_env: bool = True
     ):
         if context is None:
             context = {}
@@ -47,11 +45,11 @@ class FilenameGenerator(object):
             return {}
         return os.environ.copy()
 
-    def generate(self, filename_pattern: str, safe: bool = True) -> str:
+    def generate(self, name_pattern: str, safe: bool = True) -> str:
         context = self._finalize_context()
         sys_env = self._get_sys_env()
-        filename_template = Template(filename_pattern)
+        name_template = Template(name_pattern)
         if safe:
-            return filename_template.safe_substitute(context, **sys_env)
+            return name_template.safe_substitute(context, **sys_env)
         else:
-            return filename_template.substitute(context, **sys_env)
+            return name_template.substitute(context, **sys_env)

@@ -5,8 +5,6 @@ EVEN_PAGES = "EVEN"
 ALL_PAGES = "ALL"
 LAST_PAGE = "N"
 
-SPECIAL_PAGE_RANGES = (ODD_PAGES, EVEN_PAGES, ALL_PAGES, LAST_PAGE)
-
 
 class InvalidPageRangeError(Exception):
     pass

@@ -1,16 +1,20 @@
-from pathlib import Path
+"""
+This module contains the implementation of the i18n feature which is mainly used to create a multi-language user interface.
+
+@author: zimolab
+@created: 2024-12-11
+"""
+
 from typing import Optional
 
 import i18n
 
-from .app_config import DEFAULT_LANGUAGE, GlobalConfig
-from .app_path import ASSETS_DIR
-
-LOCALES_DIR = Path(ASSETS_DIR).joinpath("locales").absolute().as_posix()
+from .assets import locales_dir
+from .configuration import DEFAULT_LANGUAGE, GlobalConfig
 
 
 def _init_i18n():
-    i18n.load_path.append(LOCALES_DIR)
+    i18n.load_path.append(locales_dir().as_posix())
     i18n.set("fallback", DEFAULT_LANGUAGE)
     i18n.set("filename_format", "{namespace}.{locale}.{format}")
     i18n.set("enable_memoization", True)

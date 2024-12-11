@@ -44,27 +44,31 @@ from pyguiadapter.windows import DocumentBrowserConfig
 from pyguiadapter.windows.fnexec import FnExecuteWindowConfig, OutputBrowserConfig
 from pymupdf import TOOLS
 
-from ..commons.app_translation import t, LOCALES_DIR, param_name_t, tools_t
-from ..commons.context_variables import runtime, dtime, rand
-from ..commons.ui.window import (
+from ..commons.context import runtime, dtime, rand
+from ..commons.name_generator import NameGenerator
+from ..commons.page_iterator import ALL_PAGES, PageIterator, ODD_PAGES, EVEN_PAGES
+from ..commons.validators import (
+    ensure_non_empty_string,
+    ensure_in_range,
+    ensure_file_exists,
+)
+from ..commons.window_configs import (
     DEFAULT_WINDOW_SIZE,
     DEFAULT_OUTPUT_BROWSER_HEIGHT,
     DEFAULT_OUTPUT_BROWSER_FONT_SIZE,
     DEFAULT_DOCUMENT_BROWSER_FONT_SIZE,
 )
-from ..commons.utils import (
+from ..commons.workloads_distributor import distribute_evenly
+from ...assets import locales_file
+from ...translation import t, param_name_t, tools_t
+from ...utils import (
     pprint,
-    show_in_file_manager,
-    read_file,
+    open_in_file_manager,
     cwd,
     makedirs,
     close_safely,
+    read_asset_text_file,
 )
-from ..commons.validators.basic import ensure_non_empty_string, ensure_in_range
-from ..commons.validators.filepath import ensure_file_exists
-from ..core.filename_generator import FilenameGenerator
-from ..core.page_iterator import ALL_PAGES, PageIterator, ODD_PAGES, EVEN_PAGES
-from ..core.workloads_distributor import distribute_evenly
 
 
 class DuplicatePolicy(enum.Enum):
@@ -140,7 +144,7 @@ def build_context(input_file_path: Path, page_count: int) -> Dict[str, Any]:
 
 def gen_output_paths(
     page_indexes: List[int],
-    filename_generator: FilenameGenerator,
+    filename_generator: NameGenerator,
     output_dirpath: str,
     filename_format: str,
 ) -> List[Tuple[int, str]]:
@@ -283,7 +287,7 @@ def pdf2images(
         TOOLS.store_shrink(100)
 
     filename_context = build_context(input_file_path, page_count)
-    filename_generator = FilenameGenerator(filename_context)
+    filename_generator = NameGenerator(filename_context)
     output_dir = filename_generator.generate(output_dir)
     output_dirpath = Path(output_dir).absolute().as_posix()
     makedirs(output_dirpath)
@@ -355,7 +359,7 @@ def pdf2images(
         pprint(f"Finished in {time_eclipsed:.2f} seconds", verbose=verbose)
 
         if open_output_dir:
-            show_in_file_manager(output_dirpath)
+            open_in_file_manager(output_dirpath)
 
         gc.collect()
 
@@ -391,13 +395,14 @@ def _this_t(key: str, prefix: str = "app.tools.pdf2images", **kwargs):
     return t(key, prefix=prefix, **kwargs)
 
 
-FUNC_DOC_FILE = Path(LOCALES_DIR).joinpath(_this_t("document_file")).as_posix()
-
 FUNC_GROUP_NAME = tools_t("group_converters")
 FUNC_CANCELLABLE = True
 FUNC_ICON = "fa5.images"
 FUNC_DISPLAY_NAME = _this_t("display_name")
-FUNC_DOCUMENT = read_file(FUNC_DOC_FILE) or "Documentation not found!"
+FUNC_DOCUMENT = (
+    read_asset_text_file(locales_file(_this_t("document_file")))
+    or "Documentation not found!"
+)
 FUNC_DOCUMENT_FORMAT = "html"
 
 PARAM_GROUP_MAIN = tools_t("param_group_main")

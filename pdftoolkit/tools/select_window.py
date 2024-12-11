@@ -1,5 +1,11 @@
+"""
+The main window of the PDF Toolkit application is defined in this module.
+
+@author: zimolab
+@created: 2024-12-11
+"""
+
 import webbrowser
-from pathlib import Path
 from typing import List, cast
 
 import i18n
@@ -14,17 +20,56 @@ from pyguiadapter.utils.messagebox import (
     show_critical_message,
 )
 from pyguiadapter.window import BaseWindow
+from pyguiadapter.window import SimpleWindowEventListener
+from pyguiadapter.windows.fnselect import FnSelectWindowConfig, FnSelectWindow
 
-from ..commons.app_config import (
+from .commons.window_configs import DEFAULT_WINDOW_SIZE, DEFAULT_DOCUMENT_BROWSER_WIDTH
+from ..assets import license_file, locales_file
+from ..configuration import (
     GlobalConfig,
     DEFAULT_LANGUAGE,
     get_theme_safely,
     get_language_map,
 )
-from ..commons.app_meta import APP_AUTHOR, APP_LICENSE, APP_REPOSITORY, APP_VERSION
-from ..commons.app_path import ASSETS_DIR
-from ..commons.app_translation import t, LOCALES_DIR, select_win_t, app_t
-from ..commons.utils import read_file, unused
+from ..metadata import APP_NAME
+from ..metadata import AUTHOR, LICENSE, REPOSITORY, VERSION
+from ..translation import t, select_win_t, app_t
+from ..utils import unused, read_asset_text_file
+
+WINDOW_CONFIG = FnSelectWindowConfig(
+    title=APP_NAME,
+    icon="fa5s.file-pdf",
+    size=DEFAULT_WINDOW_SIZE,
+    document_browser_width=DEFAULT_DOCUMENT_BROWSER_WIDTH,
+)
+
+
+# noinspection PyUnusedLocal
+def on_window_create(window: FnSelectWindow):
+    pass
+
+
+# noinspection PyUnusedLocal
+def on_window_close(window: FnSelectWindow) -> bool:
+    return True
+
+
+# noinspection PyUnusedLocal
+def on_window_show(window: FnSelectWindow):
+    pass
+
+
+# noinspection PyUnusedLocal
+def on_window_hide(window: FnSelectWindow):
+    pass
+
+
+WINDOW_LISTENER = SimpleWindowEventListener(
+    on_create=on_window_create,
+    on_close=on_window_close,
+    on_show=on_window_show,
+    on_hide=on_window_hide,
+)
 
 
 def _menu_t(key: str, prefix: str = "app.select_window.menu", **kwargs):
@@ -33,28 +78,26 @@ def _menu_t(key: str, prefix: str = "app.select_window.menu", **kwargs):
 
 # noinspection PyUnusedLocal
 def on_action_license(window: BaseWindow, action: Action):
-    license_file = Path(ASSETS_DIR).joinpath("LICENSE.txt").absolute().as_posix()
-    license_content = read_file(
-        Path(ASSETS_DIR).joinpath("LICENSE.txt").absolute().as_posix()
-    )
+    license_content = read_asset_text_file(license_file())
     show_text_content(
         window,
         text_content=license_content,
         text_format="plaintext",
-        title=select_win_t("license_dlg_title") + " - " + APP_LICENSE,
+        title=select_win_t("license_dlg_title") + " - " + LICENSE,
         icon="fa.file-text",
     )
 
 
 # noinspection PyUnusedLocal
 def on_action_about(window: BaseWindow, action: Action):
-    about_message_file = Path(LOCALES_DIR).joinpath(select_win_t("about_msg_file"))
-    about_message = read_file(about_message_file.as_posix()).format(
+    about_message = read_asset_text_file(
+        locales_file(select_win_t("about_msg_file"))
+    ).format(
         app_name=t("app.app_name"),
-        author=APP_AUTHOR,
-        version=APP_VERSION,
-        license=APP_LICENSE,
-        repo=APP_REPOSITORY,
+        author=AUTHOR,
+        version=VERSION,
+        license=LICENSE,
+        repo=REPOSITORY,
     )
     show_about_message(
         window, title=select_win_t("about_dlg_title"), message=about_message
@@ -63,7 +106,7 @@ def on_action_about(window: BaseWindow, action: Action):
 
 # noinspection PyUnusedLocal
 def on_action_homepage(window: BaseWindow, action: Action):
-    webbrowser.open_new_tab(APP_REPOSITORY)
+    webbrowser.open_new_tab(REPOSITORY)
 
 
 def on_action_change_language(window: BaseWindow, action: Action):
@@ -172,3 +215,6 @@ MENU_THEME = Menu(
     ],
     exclusive=True,
 )
+
+
+WINDOW_MENUS = (MENU_LANGUAGE, MENU_THEME, MENU_HELP)

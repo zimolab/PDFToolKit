@@ -26,17 +26,17 @@ from pyguiadapter.widgets import DictEditConfig
 from pyguiadapter.windows import DocumentBrowserConfig
 from pyguiadapter.windows.fnexec import FnExecuteWindowConfig, OutputBrowserConfig
 
-from ..commons.app_meta import APP_NAME
-from ..commons.app_translation import t
-from ..commons.ui.window import (
+from ...metadata import APP_NAME
+from ...translation import t
+from ..commons.window_configs import (
     DEFAULT_WINDOW_SIZE,
     DEFAULT_OUTPUT_BROWSER_FONT_SIZE,
     DEFAULT_DOCUMENT_BROWSER_FONT_SIZE,
     DEFAULT_OUTPUT_BROWSER_HEIGHT,
 )
-from ..commons.utils import get_cup_count, close_safely, get_username
-from ..commons.validators.basic import ensure_non_empty_string, ensure_in_range
-from ..core.workloads_distributor import distribute_evenly
+from ...utils import cpu_count, close_safely, username
+from ..commons.validators import ensure_non_empty_string, ensure_in_range
+from ..commons.workloads_distributor import distribute_evenly
 
 
 DEFAULT_IMAGES = ""
@@ -44,7 +44,7 @@ DEFAULT_OUTPUT_FILE = "$indir/output/output.pdf"
 DEFAULT_WORKER_COUNT = 1
 DEFAULT_METADATA = {
     "producer": APP_NAME,
-    "author": get_username() or APP_NAME,
+    "author": username(APP_NAME),
     "keywords": "",
     "creationDate": "",
     "modDate": "",
@@ -113,14 +113,7 @@ def replace_page(
 def images2pdf(
     images: file_list_t, output_file: file_t, worker_count: int, metadata: dict
 ):
-    """Convert a set of images to a PDF file.
-
-    :param images: A list of image file paths.
-    :param output_file: The output PDF file path.
-    :param worker_count: The number of worker processes. More workers may speed up the process, but may consume more memory.
-    :param metadata: The metadata of the generated PDF file.
-    :return:
-    """
+    """Convert a set of images to a PDF file."""
     if not images:
         raise ParameterError("images", "no images provided")
     ensure_non_empty_string("output_file", output_file)
@@ -128,7 +121,7 @@ def images2pdf(
         "worker_count",
         worker_count,
         minimum=1,
-        maximum=get_cup_count(),
+        maximum=cpu_count(),
         include_minimum=True,
         include_maximum=True,
     )
