@@ -7,7 +7,6 @@ A tool to convert PDF pages to image files.
 
 import enum
 import gc
-import os
 import time
 from dataclasses import dataclass
 from functools import partial
@@ -46,7 +45,12 @@ from ._paramconf import (
     DEFAULT_WORKER_COUNT,
     DEFAULT_VERBOSE,
     DEFAULT_OPEN_OUTPUT_DIR,
+    MIN_DPI,
+    MAX_DPI,
+    MIN_ROTATION,
+    MAX_ROTATION,
 )
+from ..commons import check_cancel_event
 from ..commons.context import runtime, dtime, rand
 from ..commons.name_generator import NameGenerator
 from ..commons.page_iterator import ALL_PAGES, PageIterator
@@ -62,6 +66,7 @@ from ...utils import (
     cwd,
     makedirs,
     close_safely,
+    cpu_count,
 )
 
 
@@ -74,12 +79,6 @@ class Operation(enum.Enum):
 
 WORKER_COUNT_BY_CPU_COUNT = -256
 FALLBACK_WORKER_COUNT = 1
-
-MIN_DPI = 72
-MAX_DPI = 7000
-
-MIN_ROTATION = 0
-MAX_ROTATION = 360
 
 
 @dataclass
@@ -161,7 +160,7 @@ def pdf2images_task(
     page_result = PageMessage()
 
     for page_index, output_filepath in output_filepaths:
-        if ctx and ctx.is_cancel_event_set():
+        if check_cancel_event(ctx):
             break
         try:
             page_result.page_index = page_index
@@ -182,6 +181,7 @@ def pdf2images_task(
             page.set_rotation(rotation)
             # noinspection PyUnresolvedReferences
             pixmap = page.get_pixmap(
+                # why get_pixmap() not resolved by IDE?
                 dpi=dpi,
                 alpha=alpha,
                 colorspace=colorspace,
@@ -223,11 +223,11 @@ def pdf2images(
     verbose: bool = DEFAULT_VERBOSE,
     open_output_dir: bool = DEFAULT_OPEN_OUTPUT_DIR,
 ):
-    if worker_count == 0:
-        worker_count = FALLBACK_WORKER_COUNT
-
     if worker_count == WORKER_COUNT_BY_CPU_COUNT:
-        worker_count = os.cpu_count() or FALLBACK_WORKER_COUNT
+        worker_count = cpu_count(FALLBACK_WORKER_COUNT)
+
+    if worker_count <= 0:
+        worker_count = FALLBACK_WORKER_COUNT
 
     page_ranges = page_ranges.strip() or ALL_PAGES
     input_file_path = Path(input_file).absolute()

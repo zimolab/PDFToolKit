@@ -10,7 +10,6 @@
     "select_button_text": "选择",
     "unknown_lang_msg": "未知的语言：{lang}",
     "lang_changed_msg": "语言切换成功，请重启程序。",
-
     "menu": {
       "menu_help": "帮助",
       "menu_language": "语言",
@@ -35,10 +34,18 @@
     "clear_button_text": "清除输出",
     "output_dock_title": "程序输出",
     "document_dock_title": "程序文档",
+    "enabled": "启用",
+    "disabled": "禁用",
+    "pdf_file_filters": "PDF文件 (*.pdf);;所有文件 (*.*)",
 
     "pdf2images": {
       "display_name": "PDF转图片",
-      "document_file": "pdf2images.zh_CN.html"
+      "document_file": "pdf2images.zh_CN.html",
+      "render_annots": "渲染注解",
+      "ignore_annots": "忽略注解",
+      "all_pages": "所有页",
+      "odd_pages": "奇数页",
+      "even_pages": "偶数页"
     }
   },
   "param_names": {
