@@ -18,7 +18,7 @@ from pdftoolkit.tools import pdf2images
 from pdftoolkit.tools import images2pdf
 from pdftoolkit.utils import unused
 
-_L = logme.new("application")
+_L = logme.new(__name__)
 
 
 def register_parameter_widgets():
