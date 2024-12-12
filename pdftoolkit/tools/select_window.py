@@ -23,7 +23,7 @@ from pyguiadapter.window import BaseWindow
 from pyguiadapter.window import SimpleWindowEventListener
 from pyguiadapter.windows.fnselect import FnSelectWindowConfig, FnSelectWindow
 
-from .commons.window_configs import DEFAULT_WINDOW_SIZE, DEFAULT_DOCUMENT_BROWSER_WIDTH
+from .commons.winconf import DEFAULT_WINDOW_SIZE, DEFAULT_DOCUMENT_DOCK_WIDTH
 from ..assets import license_file, locales_file
 from ..configuration import (
     GlobalConfig,
@@ -40,7 +40,7 @@ WINDOW_CONFIG = FnSelectWindowConfig(
     title=APP_NAME,
     icon="fa5s.file-pdf",
     size=DEFAULT_WINDOW_SIZE,
-    document_browser_width=DEFAULT_DOCUMENT_BROWSER_WIDTH,
+    document_browser_width=DEFAULT_DOCUMENT_DOCK_WIDTH,
 )
 
 

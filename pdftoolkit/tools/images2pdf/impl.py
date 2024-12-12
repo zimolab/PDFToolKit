@@ -28,11 +28,11 @@ from pyguiadapter.windows.fnexec import FnExecuteWindowConfig, OutputBrowserConf
 
 from ...metadata import APP_NAME
 from ...translation import t
-from ..commons.window_configs import (
+from ..commons.winconf import (
     DEFAULT_WINDOW_SIZE,
-    DEFAULT_OUTPUT_BROWSER_FONT_SIZE,
-    DEFAULT_DOCUMENT_BROWSER_FONT_SIZE,
-    DEFAULT_OUTPUT_BROWSER_HEIGHT,
+    DEFAULT_OUTPUT_FONT_SIZE,
+    DEFAULT_DOCUMENT_FONT_SIZE,
+    DEFAULT_OUTPUT_DOCK_HEIGHT,
 )
 from ...utils import cpu_count, close_safely, username
 from ..commons.validators import ensure_non_empty_string, ensure_in_range
@@ -245,17 +245,13 @@ PARAM_GROUP_MISC = "Misc"
 EXEC_WINDOW_CONFIG = FnExecuteWindowConfig(
     title=FUNC_DISPLAY_NAME,
     size=DEFAULT_WINDOW_SIZE,
-    output_browser_config=OutputBrowserConfig(
-        font_size=DEFAULT_OUTPUT_BROWSER_FONT_SIZE
-    ),
-    document_browser_config=DocumentBrowserConfig(
-        font_size=DEFAULT_DOCUMENT_BROWSER_FONT_SIZE
-    ),
+    output_browser_config=OutputBrowserConfig(font_size=DEFAULT_OUTPUT_FONT_SIZE),
+    document_browser_config=DocumentBrowserConfig(font_size=DEFAULT_DOCUMENT_FONT_SIZE),
     execute_button_text="Start",
     default_parameter_group_name=PARAM_GROUP_MAIN,
     print_function_result=False,
     print_function_error=False,
-    output_dock_initial_size=(None, DEFAULT_OUTPUT_BROWSER_HEIGHT),
+    output_dock_initial_size=(None, DEFAULT_OUTPUT_DOCK_HEIGHT),
 )
 
 WIDGET_CONFIGS = {

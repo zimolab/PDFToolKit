@@ -22,7 +22,6 @@ from py_multitasking import (
     Scope,
     TaskResult,
 )
-from pyguiadapter.adapter import GUIAdapter
 from pyguiadapter.adapter.ucontext import is_function_cancelled
 from pyguiadapter.adapter.uprogress import (
     show_progressbar,
@@ -30,50 +29,40 @@ from pyguiadapter.adapter.uprogress import (
     hide_progressbar,
 )
 from pyguiadapter.extend_types import file_t, directory_t
-from pyguiadapter.widgets import (
-    FileSelectConfig,
-    DirSelectConfig,
-    LineEditConfig,
-    ExclusiveChoiceBoxConfig,
-    ChoiceBoxConfig,
-    IntSpinBoxConfig,
-    BoolBoxConfig,
-    EnumSelectConfig,
-)
-from pyguiadapter.windows import DocumentBrowserConfig
-from pyguiadapter.windows.fnexec import FnExecuteWindowConfig, OutputBrowserConfig
 from pymupdf import TOOLS
 
+from ._paramconf import (
+    DuplicatePolicy,
+    DEFAULT_INPUT_FILE,
+    DEFAULT_OUTPUT_DIR,
+    DEFAULT_FILENAME_FORMAT,
+    DEFAULT_DUPLICATE_POLICY,
+    DEFAULT_PAGE_RANGES,
+    DEFAULT_DPI,
+    DEFAULT_ALPHA,
+    DEFAULT_ROTATION,
+    DEFAULT_COLORSPACE,
+    DEFAULT_ANNOTS,
+    DEFAULT_WORKER_COUNT,
+    DEFAULT_VERBOSE,
+    DEFAULT_OPEN_OUTPUT_DIR,
+)
 from ..commons.context import runtime, dtime, rand
 from ..commons.name_generator import NameGenerator
-from ..commons.page_iterator import ALL_PAGES, PageIterator, ODD_PAGES, EVEN_PAGES
+from ..commons.page_iterator import ALL_PAGES, PageIterator
 from ..commons.validators import (
     ensure_non_empty_string,
     ensure_in_range,
     ensure_file_exists,
 )
-from ..commons.window_configs import (
-    DEFAULT_WINDOW_SIZE,
-    DEFAULT_OUTPUT_BROWSER_HEIGHT,
-    DEFAULT_OUTPUT_BROWSER_FONT_SIZE,
-    DEFAULT_DOCUMENT_BROWSER_FONT_SIZE,
-)
 from ..commons.workloads_distributor import distribute_evenly
-from ...assets import locales_file
-from ...translation import t, param_name_t, tools_t
 from ...utils import (
     pprint,
     open_in_file_manager,
     cwd,
     makedirs,
     close_safely,
-    read_asset_text_file,
 )
-
-
-class DuplicatePolicy(enum.Enum):
-    Skip = "skip"
-    Overwrite = "overwrite"
 
 
 class Operation(enum.Enum):
@@ -81,11 +70,6 @@ class Operation(enum.Enum):
     Overwritten = "overwritten"
     Skipped = "skipped"
     Errored = "errored"
-
-
-CS_RGB = "RGB"
-CS_GRAY = "GRAY"
-CS_CMYK = "CMYK"
 
 
 WORKER_COUNT_BY_CPU_COUNT = -256
@@ -96,20 +80,6 @@ MAX_DPI = 7000
 
 MIN_ROTATION = 0
 MAX_ROTATION = 360
-
-DEFAULT_INPUT_FILE = ""
-DEFAULT_OUTPUT_DIR = "$indir/output/"
-DEFAULT_FILENAME_FORMAT = "page-$page.png"
-DEFAULT_PAGE_RANGES = ALL_PAGES
-DEFAULT_DPI = 300
-DEFAULT_ALPHA = False
-DEFAULT_ROTATION = 0
-DEFAULT_COLORSPACE = CS_RGB
-DEFAULT_ANNOTS = True
-DEFAULT_DUPLICATE_POLICY = DuplicatePolicy.Skip
-DEFAULT_WORKER_COUNT = 1
-DEFAULT_VERBOSE = True
-DEFAULT_OPEN_OUTPUT_DIR = True
 
 
 @dataclass
@@ -210,6 +180,7 @@ def pdf2images_task(
                 page_result.operation = Operation.Created
             page = document[page_index]
             page.set_rotation(rotation)
+            # noinspection PyUnresolvedReferences
             pixmap = page.get_pixmap(
                 dpi=dpi,
                 alpha=alpha,
@@ -385,158 +356,4 @@ def _print_task_result(task_name: str, task_result: TaskResult, verbose: bool = 
     pprint(
         f"[Task] {task_name}: total: {page_task_ret.total_count}; success: {page_task_ret.success_count}; failure: {page_task_ret.failure_count}",
         verbose=verbose,
-    )
-
-
-# ----------------------------------Below are the window and widgets configuration codes--------------------------------
-
-
-def _this_t(key: str, prefix: str = "app.tools.pdf2images", **kwargs):
-    return t(key, prefix=prefix, **kwargs)
-
-
-FUNC_GROUP_NAME = tools_t("group_converters")
-FUNC_CANCELLABLE = True
-FUNC_ICON = "fa5.images"
-FUNC_DISPLAY_NAME = _this_t("display_name")
-FUNC_DOCUMENT = (
-    read_asset_text_file(locales_file(_this_t("document_file")))
-    or "Documentation not found!"
-)
-FUNC_DOCUMENT_FORMAT = "html"
-
-PARAM_GROUP_MAIN = tools_t("param_group_main")
-PARAM_GROUP_ADVANCED = tools_t("param_group_advanced")
-PARAM_GROUP_MISC = tools_t(f"param_group_misc")
-
-FILE_FILTERS = "PDF files (*.pdf);;All files (*.*)"
-
-WIDGET_CONFIGS = {
-    "input_file": FileSelectConfig(
-        label=param_name_t("input_file"),
-        default_value=DEFAULT_INPUT_FILE,
-        filters=FILE_FILTERS,
-    ),
-    "output_dir": DirSelectConfig(
-        label=param_name_t("output_dir"),
-        default_value=DEFAULT_OUTPUT_DIR,
-    ),
-    "filename_format": LineEditConfig(
-        label=param_name_t("filename_format"),
-        default_value=DEFAULT_FILENAME_FORMAT,
-    ),
-    "duplicate_policy": EnumSelectConfig(
-        label=param_name_t("duplicate_policy"),
-        default_value=DEFAULT_DUPLICATE_POLICY,
-    ),
-    "page_ranges": ChoiceBoxConfig(
-        label=param_name_t("page_ranges"),
-        choices={
-            "All Pages": ALL_PAGES,
-            "Odd Pages": ODD_PAGES,
-            "Even Pages": EVEN_PAGES,
-        },
-        editable=True,
-        add_user_input=False,
-    ),
-    "dpi": IntSpinBoxConfig(
-        label=param_name_t("dpi"),
-        default_value=DEFAULT_DPI,
-        min_value=MIN_DPI,
-        max_value=MAX_DPI,
-        step=50,
-        group=PARAM_GROUP_ADVANCED,
-    ),
-    "alpha": BoolBoxConfig(
-        label=param_name_t("alpha"),
-        default_value=DEFAULT_ALPHA,
-        true_text="Enabled",
-        false_text="Disabled",
-        group=PARAM_GROUP_ADVANCED,
-    ),
-    "rotation": IntSpinBoxConfig(
-        label=param_name_t("rotation"),
-        default_value=DEFAULT_ROTATION,
-        default_value_description="No rotation",
-        min_value=0,
-        max_value=360,
-        step=90,
-        group=PARAM_GROUP_ADVANCED,
-    ),
-    "colorspace": ExclusiveChoiceBoxConfig(
-        label=param_name_t("colorspace"),
-        default_value=DEFAULT_COLORSPACE,
-        default_value_description="Auto",
-        choices=[CS_RGB, CS_GRAY, CS_CMYK],
-        group=PARAM_GROUP_ADVANCED,
-    ),
-    "annots": BoolBoxConfig(
-        label=param_name_t("annots"),
-        default_value=DEFAULT_ANNOTS,
-        true_text="Render",
-        false_text="Suppress",
-        group=PARAM_GROUP_ADVANCED,
-    ),
-    "worker_count": IntSpinBoxConfig(
-        label=param_name_t("worker_count"),
-        default_value=DEFAULT_WORKER_COUNT,
-        min_value=1,
-        step=1,
-        max_value=os.cpu_count() or FALLBACK_WORKER_COUNT,
-        group=PARAM_GROUP_MISC,
-    ),
-    "verbose": BoolBoxConfig(
-        label=param_name_t("verbose"),
-        default_value=DEFAULT_VERBOSE,
-        true_text="Enabled",
-        false_text="Disabled",
-        group=PARAM_GROUP_MISC,
-    ),
-    "open_output_dir": BoolBoxConfig(
-        label=param_name_t("open_output_dir"),
-        default_value=DEFAULT_OPEN_OUTPUT_DIR,
-        true_text="Yes",
-        false_text="No",
-        group=PARAM_GROUP_MISC,
-    ),
-}
-
-EXEC_WINDOW_CONFIG = FnExecuteWindowConfig(
-    always_on_top=False,
-    title=FUNC_DISPLAY_NAME,
-    size=DEFAULT_WINDOW_SIZE,
-    output_browser_config=OutputBrowserConfig(
-        font_size=DEFAULT_OUTPUT_BROWSER_FONT_SIZE
-    ),
-    document_browser_config=DocumentBrowserConfig(
-        font_size=DEFAULT_DOCUMENT_BROWSER_FONT_SIZE,
-        parameter_anchor=True,
-        group_anchor=True,
-    ),
-    execute_button_text=tools_t("execute_button_text"),
-    cancel_button_text=tools_t("cancel_button_text"),
-    clear_button_text=tools_t("clear_button_text"),
-    clear_checkbox_text=tools_t("clear_checkbox_text"),
-    output_dock_title=tools_t("output_dock_title"),
-    document_dock_title=tools_t("document_dock_title"),
-    default_parameter_group_name=PARAM_GROUP_MAIN,
-    print_function_result=False,
-    print_function_error=False,
-    output_dock_initial_size=(None, DEFAULT_OUTPUT_BROWSER_HEIGHT),
-)
-
-# --------------------------------Add the function to GUIAdapter instance------------------------------------------------
-
-
-def use(adapter: GUIAdapter):
-    adapter.add(
-        pdf2images,
-        group=FUNC_GROUP_NAME,
-        cancelable=FUNC_CANCELLABLE,
-        display_name=FUNC_DISPLAY_NAME,
-        document=FUNC_DOCUMENT,
-        document_format=FUNC_DOCUMENT_FORMAT,
-        icon=FUNC_ICON,
-        widget_configs=WIDGET_CONFIGS,
-        window_config=EXEC_WINDOW_CONFIG,
     )
