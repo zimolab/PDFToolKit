@@ -1,15 +1,15 @@
-from typing import Optional
+from typing import Sequence, Any
 
 from pyguiadapter.exceptions import ParameterError
 
 
-def ensure_string(parameter_name: str, value: str, msg: Optional[str] = None):
+def ensure_string(parameter_name: str, value: str, msg: str | None = None):
     msg = msg or f"{parameter_name} should be a string"
     if not isinstance(value, str):
         raise ParameterError(parameter_name, msg)
 
 
-def ensure_non_empty_string(parameter_name: str, value: str, msg: Optional[str] = None):
+def ensure_non_empty_string(parameter_name: str, value: str, msg: str | None = None):
     msg = msg or f"{parameter_name} should be a non-empty string"
     ensure_string(parameter_name, value)
     if not value.strip():
@@ -19,11 +19,11 @@ def ensure_non_empty_string(parameter_name: str, value: str, msg: Optional[str] 
 def ensure_in_range(
     parameter_name: str,
     value: int,
-    minimum: Optional[int],
-    maximum: Optional[int],
-    include_minimum=True,
-    include_maximum=False,
-    msg: Optional[str] = None,
+    minimum: int | None,
+    maximum: int | None,
+    include_minimum: bool = True,
+    include_maximum: bool = False,
+    msg: str | None = None,
 ):
     if not isinstance(value, (int, float)):
         msg = msg or f"{parameter_name} should be a number"
@@ -40,4 +40,20 @@ def ensure_in_range(
         and value > maximum
         or (not include_maximum and value == maximum)
     ):
+        raise ParameterError(parameter_name, msg)
+
+
+def ensure_non_empty_sequence(
+    parameter_name: str, value: Sequence[Any], msg: str | None = None
+):
+    if len(value) == 0:
+        msg = msg or f"{parameter_name} should not be an empty sequence"
+        raise ParameterError(parameter_name, msg)
+
+
+def ensure_in_set(
+    parameter_name: str, value: Any, allowed_values: set, msg: str | None = None
+):
+    if value not in allowed_values:
+        msg = msg or f"{parameter_name} should be one of {allowed_values}"
         raise ParameterError(parameter_name, msg)

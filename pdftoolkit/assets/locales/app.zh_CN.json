@@ -1,7 +1,9 @@
 {
   "app_name": "PDF Toolkit",
   "error_dlg_title": "错误",
+  "warning_dlg_title": "警告",
   "success_dlg_title": "成功",
+  "confirm_dlg_title": "确认",
 
   "select_window": {
     "about_msg_file": "about.zh_CN.txt",
@@ -46,13 +48,24 @@
       "all_pages": "所有页",
       "odd_pages": "奇数页",
       "even_pages": "偶数页"
+    },
+    "images2pdf": {
+      "files2pdf": "图片文件序列转PDF",
+      "overwrite_confirm_msg": "目标文件已存在，是否覆盖？",
+      "overwrite_not_allowed_msg": "目标文件已存在，请选择其他文件名!",
+      "add_file_button_text": "添加图片",
+      "remove_button_text": "移除图片",
+      "clear_button_text": "清除所有图片",
+      "duplicate_no_overwrite": "不允许覆盖文件",
+      "duplicate_overwrite": "覆盖已存在文件",
+      "duplicate_confirm": "询问用户是否覆盖"
     }
   },
   "param_names": {
     "input_file": "输入文件",
     "output_dir": "输出目录",
     "filename_format": "输出文件名",
-    "duplicate_policy": "重复文件处理策略",
+    "duplicate_policy": "重复文件",
     "page_ranges": "页码范围",
     "dpi": "分辨率",
     "alpha": "Alpha通道",
@@ -61,6 +74,8 @@
     "annots": "注解",
     "worker_count": "工作进程数",
     "verbose": "详细信息",
-    "open_output_dir": "打开输出目录"
+    "open_output_dir": "打开输出目录",
+    "image_files": "图片文件",
+    "dest_file": "目标文件"
   }
 }
