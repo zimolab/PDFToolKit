@@ -51,8 +51,11 @@ def ensure_non_empty_sequence(
         raise ParameterError(parameter_name, msg)
 
 
-def ensure_in_set(
-    parameter_name: str, value: Any, allowed_values: set, msg: str | None = None
+def ensure_in_sequence(
+    parameter_name: str,
+    value: Any,
+    allowed_values: Sequence[Any],
+    msg: str | None = None,
 ):
     if value not in allowed_values:
         msg = msg or f"{parameter_name} should be one of {allowed_values}"

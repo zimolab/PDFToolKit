@@ -13,8 +13,13 @@ from pyguiadapter.widgets import (
 
 from ._commons import _this_t
 from ..commons import ALL_PAGES, ODD_PAGES, EVEN_PAGES
+from ..commons.paramconf import (
+    PARAM_GROUP_ADVANCED,
+    PARAM_WORKER_COUNT,
+    PARAM_VERBOSE,
+    PARAM_OPEN_OUTPUT_DIR,
+)
 from ...translation import param_name_t, tools_t
-from ...utils import cpu_count
 
 
 class DuplicatePolicy(enum.Enum):
@@ -42,13 +47,6 @@ DEFAULT_ROTATION = 0
 DEFAULT_COLORSPACE = CS_RGB
 DEFAULT_ANNOTS = True
 DEFAULT_DUPLICATE_POLICY = DuplicatePolicy.Skip
-DEFAULT_WORKER_COUNT = 1
-DEFAULT_VERBOSE = True
-DEFAULT_OPEN_OUTPUT_DIR = True
-
-
-_PARAM_GROUP_ADVANCED = tools_t("param_group_advanced")
-_PARAM_GROUP_MISC = tools_t(f"param_group_misc")
 
 
 CONFIGS = {
@@ -85,14 +83,14 @@ CONFIGS = {
         min_value=MIN_DPI,
         max_value=MAX_DPI,
         step=50,
-        group=_PARAM_GROUP_ADVANCED,
+        group=PARAM_GROUP_ADVANCED,
     ),
     "alpha": BoolBoxConfig(
         label=param_name_t("alpha"),
         default_value=DEFAULT_ALPHA,
         true_text=tools_t("enabled"),
         false_text=tools_t("disabled"),
-        group=_PARAM_GROUP_ADVANCED,
+        group=PARAM_GROUP_ADVANCED,
     ),
     "rotation": IntSpinBoxConfig(
         label=param_name_t("rotation"),
@@ -100,41 +98,22 @@ CONFIGS = {
         min_value=MIN_ROTATION,
         max_value=MAX_ROTATION,
         step=ROTATION_STEP,
-        group=_PARAM_GROUP_ADVANCED,
+        group=PARAM_GROUP_ADVANCED,
     ),
     "colorspace": ExclusiveChoiceBoxConfig(
         label=param_name_t("colorspace"),
         default_value=DEFAULT_COLORSPACE,
         choices=[CS_RGB, CS_GRAY, CS_CMYK],
-        group=_PARAM_GROUP_ADVANCED,
+        group=PARAM_GROUP_ADVANCED,
     ),
     "annots": BoolBoxConfig(
         label=param_name_t("annots"),
         default_value=DEFAULT_ANNOTS,
         true_text=_this_t("render_annots"),
         false_text=_this_t("ignore_annots"),
-        group=_PARAM_GROUP_ADVANCED,
+        group=PARAM_GROUP_ADVANCED,
     ),
-    "worker_count": IntSpinBoxConfig(
-        label=param_name_t("worker_count"),
-        default_value=DEFAULT_WORKER_COUNT,
-        min_value=1,
-        step=1,
-        max_value=cpu_count(),
-        group=_PARAM_GROUP_MISC,
-    ),
-    "verbose": BoolBoxConfig(
-        label=param_name_t("verbose"),
-        default_value=DEFAULT_VERBOSE,
-        true_text="Enabled",
-        false_text="Disabled",
-        group=_PARAM_GROUP_MISC,
-    ),
-    "open_output_dir": BoolBoxConfig(
-        label=param_name_t("open_output_dir"),
-        default_value=DEFAULT_OPEN_OUTPUT_DIR,
-        true_text="Yes",
-        false_text="No",
-        group=_PARAM_GROUP_MISC,
-    ),
+    "worker_count": PARAM_WORKER_COUNT,
+    "verbose": PARAM_VERBOSE,
+    "open_output_dir": PARAM_OPEN_OUTPUT_DIR,
 }

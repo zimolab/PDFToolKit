@@ -2,13 +2,13 @@ from pyguiadapter.adapter import GUIAdapter
 
 from . import _winconf, _paramconf
 from ._commons import _this_t
-from ._files2pdf import files2pdf
+from ._impl import images2pdf
 from ...translation import tools_t
 
 
 def use(adapter: GUIAdapter):
     adapter.add(
-        files2pdf,
+        images2pdf,
         cancelable=True,
         display_name=_this_t("files2pdf"),
         group=tools_t("group_converters"),

@@ -253,10 +253,10 @@ def get_file_ext(file_path: str) -> str:
     return os.path.splitext(file_path)[1][1:]
 
 
-def makedirs(dirpath: PathLike | str):
-    dirpath = Path(dirpath)
-    if not dirpath.is_dir():
-        dirpath.mkdir(parents=True, exist_ok=True)
+def makedirs(dir_path: PathLike | str):
+    dir_path = Path(dir_path)
+    if not dir_path.is_dir():
+        dir_path.mkdir(parents=True, exist_ok=True)
 
 
 def close_safely(obj, output_stderr: bool = False):

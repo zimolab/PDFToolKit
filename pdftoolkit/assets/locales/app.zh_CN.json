@@ -37,8 +37,11 @@
     "output_dock_title": "程序输出",
     "document_dock_title": "程序文档",
     "enabled": "启用",
-    "disabled": "禁用",
+    "disabled": "不启用",
+    "yes": "是",
+    "no": "否",
     "pdf_file_filters": "PDF文件 (*.pdf);;所有文件 (*.*)",
+    "image_file_filters": "JPEG文件 (*.jpeg);;JPG文件 (*.jpg);;PNG文件 (*.png);;GIF文件 (*.gif);;TIFF文件 (*.tiff);;所有文件 (*.*)",
 
     "pdf2images": {
       "display_name": "PDF转图片",

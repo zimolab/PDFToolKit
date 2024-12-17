@@ -11,7 +11,7 @@ import time
 from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
-from typing import Dict, Optional, Any, List, Tuple
+from typing import Any
 
 import pymupdf
 from py_multitasking import (
@@ -42,9 +42,6 @@ from ._paramconf import (
     DEFAULT_ROTATION,
     DEFAULT_COLORSPACE,
     DEFAULT_ANNOTS,
-    DEFAULT_WORKER_COUNT,
-    DEFAULT_VERBOSE,
-    DEFAULT_OPEN_OUTPUT_DIR,
     MIN_DPI,
     MAX_DPI,
     MIN_ROTATION,
@@ -54,6 +51,11 @@ from ..commons import check_cancel_event
 from ..commons.context import runtime, dtime, rand
 from ..commons.name_generator import NameGenerator
 from ..commons.page_iterator import ALL_PAGES, PageIterator
+from ..commons.paramconf import (
+    DEFAULT_WORKER_COUNT,
+    DEFAULT_VERBOSE,
+    DEFAULT_OPEN_OUTPUT_DIR,
+)
 from ..commons.validators import (
     ensure_non_empty_string,
     ensure_in_range,
@@ -83,10 +85,10 @@ FALLBACK_WORKER_COUNT = 1
 
 @dataclass
 class PageMessage(object):
-    page_index: Optional[int] = None
-    output_path: Optional[str] = None
-    operation: Optional[Operation] = None
-    error: Optional[Exception] = None
+    page_index: int | None = None
+    output_path: str | None = None
+    operation: Operation | None = None
+    error: Exception | None = None
 
 
 @dataclass
@@ -94,11 +96,11 @@ class TaskReturn(object):
     total_count: int = -1
     success_count: int = -1
     failure_count: int = -1
-    page_exceptions: Optional[Dict[int, Exception]] = None
-    fatal_exception: Optional[Exception] = None
+    page_exceptions: dict[int, Exception] | None = None
+    task_exception: Exception | None = None
 
 
-def build_context(input_file_path: Path, page_count: int) -> Dict[str, Any]:
+def _build_name_context(input_file_path: Path, page_count: int) -> dict[str, Any]:
     ctx = {
         **runtime.VARIABLES,
         **dtime.VARIABLES,
@@ -111,12 +113,12 @@ def build_context(input_file_path: Path, page_count: int) -> Dict[str, Any]:
     return ctx
 
 
-def gen_output_paths(
-    page_indexes: List[int],
+def _gen_output_paths(
+    page_indexes: list[int],
     filename_generator: NameGenerator,
-    output_dirpath: str,
+    output_dir: str | Path,
     filename_format: str,
-) -> List[Tuple[int, str]]:
+) -> list[tuple[int, str]]:
     output_files = []
     for page_index in page_indexes:
         cur_page_num = page_index + 1
@@ -124,16 +126,16 @@ def gen_output_paths(
         filename_generator.update_context(runtime.VARNAME_CUR_PAGE, cur_page_num)
 
         filename = filename_generator.generate(filename_format)
-        output_filepath = Path(output_dirpath).joinpath(filename)
-        makedirs(output_filepath.parent)
-        output_files.append((page_index, output_filepath.as_posix()))
+        output_file_path = Path(output_dir).joinpath(filename)
+        makedirs(output_file_path.parent)
+        output_files.append((page_index, output_file_path.as_posix()))
 
     return output_files
 
 
 def pdf2images_task(
     ctx: TaskContext,
-    output_filepaths: Dict[int, str],
+    output_filepaths: dict[int, str],
     duplicate_policy: DuplicatePolicy,
     input_file: str,
     dpi: int,
@@ -147,13 +149,13 @@ def pdf2images_task(
         success_count=0,
         failure_count=0,
         page_exceptions=None,
-        fatal_exception=None,
+        task_exception=None,
     )
 
     try:
         document = pymupdf.open(input_file)
     except Exception as e:
-        ret.fatal_exception = e
+        ret.task_exception = e
         return ret
 
     page_exceptions = {}
@@ -257,19 +259,19 @@ def pdf2images(
         close_safely(document)
         TOOLS.store_shrink(100)
 
-    filename_context = build_context(input_file_path, page_count)
+    filename_context = _build_name_context(input_file_path, page_count)
     filename_generator = NameGenerator(filename_context)
     output_dir = filename_generator.generate(output_dir)
-    output_dirpath = Path(output_dir).absolute().as_posix()
-    makedirs(output_dirpath)
-    output_filepaths = gen_output_paths(
+    output_dir_path = Path(output_dir)
+    makedirs(output_dir_path)
+    output_paths = _gen_output_paths(
         page_indexes=page_indexes,
         filename_generator=filename_generator,
-        output_dirpath=output_dirpath,
+        output_dir=output_dir_path,
         filename_format=filename_format,
     )
     # distribute workloads evenly across workers
-    work_loads = distribute_evenly(output_filepaths, worker_count)
+    work_loads = distribute_evenly(output_paths, worker_count)
     with with_process_pool_executor(max_workers=worker_count) as manager:
         show_progressbar(min_value=1, max_value=total_count)
         scopes = Scopes(
@@ -330,7 +332,7 @@ def pdf2images(
         pprint(f"Finished in {time_eclipsed:.2f} seconds", verbose=verbose)
 
         if open_output_dir:
-            open_in_file_manager(output_dirpath)
+            open_in_file_manager(output_dir_path)
 
         gc.collect()
 

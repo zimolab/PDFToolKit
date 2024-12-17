@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11, <3.12"
-pyguiadapter = "^1.0.6"
+pyguiadapter = "^1.0.7"
 pymupdf = "^1.24.13"
 pillow = "^11.0.0"
 py-multitasking = "^0.1.1"
