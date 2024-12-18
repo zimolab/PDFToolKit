@@ -84,3 +84,4 @@ poetry.lock
 *.pdf
 .DS_Store
 .python-version
+devlog.md
