@@ -1,6 +1,6 @@
 import dataclasses
 
+from ._commons import _this_t
 from ..commons.winconf import DEFAULT_EXEC_WINDOW_CONFIG
-from ...translation import tools_t
 
-CONFIG = dataclasses.replace(DEFAULT_EXEC_WINDOW_CONFIG, title=tools_t("display_name"))
+CONFIG = dataclasses.replace(DEFAULT_EXEC_WINDOW_CONFIG, title=_this_t("display_name"))
