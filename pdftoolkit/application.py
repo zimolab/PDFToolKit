@@ -13,7 +13,7 @@ from qtpy.QtWidgets import QApplication
 from pdftoolkit.widgets import rect_tuple_t, RectWidget
 from pdftoolkit import logme
 from pdftoolkit.configuration import GlobalConfig, get_theme_safely
-from pdftoolkit.tools import select_window
+from pdftoolkit.tools import select_window, pdfmerger
 from pdftoolkit.tools import pdf2images
 from pdftoolkit.tools import images2pdf
 from pdftoolkit.utils import unused
@@ -49,6 +49,7 @@ def main():
     adapter = GUIAdapter(on_app_start=on_app_start)
     pdf2images.use(adapter)
     images2pdf.use(adapter)
+    pdfmerger.use(adapter)
     adapter.run(
         show_select_window=True,
         select_window_config=select_window.WINDOW_CONFIG,
