@@ -26,7 +26,7 @@
   },
   "tools": {
     "group_converters": "转换工具",
-    "group_splitters": "分割工具",
+    "group_merger_and_spliter": "分割、合并工具",
     "param_group_main": "主要参数",
     "param_group_advanced": "高级参数",
     "param_group_misc": "其他参数",
@@ -62,6 +62,9 @@
       "duplicate_no_overwrite": "不允许覆盖文件",
       "duplicate_overwrite": "覆盖已存在文件",
       "duplicate_confirm": "询问用户是否覆盖"
+    },
+    "pdfmerger": {
+      "display_name": "PDF合并"
     }
   },
   "param_names": {
