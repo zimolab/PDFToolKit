@@ -76,7 +76,7 @@ def read_asset_text_file(
     asset_file_path: PathLike | str, encoding: str = "utf-8", no_raise: bool = False
 ):
     """
-    Read the content of an asset text file.
+    Read the content of an asset text file (a file in the assets directory).
 
     Args:
         asset_file_path (PathLike): The path of the asset text file.
@@ -223,6 +223,17 @@ def pprint(
     scroll_to_bottom: bool = True,
     verbose: bool = True,
 ):
+    """
+    Print to the output browser of the current FnExecuteWindow.
+
+    Args:
+        *args: The objects to be printed.
+        sep (str, optional): The separator between the objects. Defaults to " ".
+        end (str, optional): The end character of the output. Defaults to "\n".
+        html (bool, optional): Indicates whether the output is in HTML format. Defaults to False.
+        scroll_to_bottom (bool, optional): Whether to scroll to the bottom of the output browser. Defaults to True.
+        verbose (bool, optional): Whether to print the output. Defaults to True.
+    """
     if not verbose:
         return
     if ucontext.get_current_window() is None:
@@ -234,6 +245,12 @@ def pprint(
 
 
 def cwd() -> str:
+    """
+    Get the current working directory.
+
+    Returns:
+        str: The current working directory.
+    """
     path = Path(os.getcwd())
     return str(path.absolute())
 
@@ -254,12 +271,25 @@ def get_file_ext(file_path: str) -> str:
 
 
 def makedirs(dir_path: PathLike | str):
+    """
+    Create a directory and all its parent directories if they do not exist.
+
+    Args:
+        dir_path (PathLike | str): The path of the directory to be created.
+    """
     dir_path = Path(dir_path)
     if not dir_path.is_dir():
         dir_path.mkdir(parents=True, exist_ok=True)
 
 
 def close_safely(obj, output_stderr: bool = False):
+    """
+    Close an object safely (invoke close() method of the object and catch the exception if any).
+
+    Args:
+        obj: The object to be closed.
+        output_stderr (bool, optional): Whether to output error messages to stderr when there is an error closing the object. Defaults to False.
+    """
     if obj is None:
         return
     try:
