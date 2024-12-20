@@ -1,1 +1,1 @@
-from .rect_widget import RectWidget, RectWidgetConfig, rect_tuple_t
+from .rect_widget import RectSelect, RectSelectConfig, rect_tuple_t

@@ -12,7 +12,7 @@ class rect_tuple_t(tuple):
 
 
 @dataclasses.dataclass(frozen=True)
-class RectWidgetConfig(CommonParameterWidgetConfig):
+class RectSelectConfig(CommonParameterWidgetConfig):
 
     default_value: Optional[
         Tuple[float, float, float, float] | Tuple[int, int, int, int]
@@ -28,16 +28,16 @@ class RectWidgetConfig(CommonParameterWidgetConfig):
     compact_layout: bool = False
 
     @classmethod
-    def target_widget_class(cls) -> Type["RectWidget"]:
-        return RectWidget
+    def target_widget_class(cls) -> Type["RectSelect"]:
+        return RectSelect
 
 
-class RectWidget(CommonParameterWidget):
+class RectSelect(CommonParameterWidget):
 
-    ConfigClass = RectWidgetConfig
+    ConfigClass = RectSelectConfig
 
     def __init__(
-        self, parent: Optional[QWidget], parameter_name: str, config: RectWidgetConfig
+        self, parent: Optional[QWidget], parameter_name: str, config: RectSelectConfig
     ):
         super().__init__(parent, parameter_name, config)
         self._value_widget: Optional[QWidget] = None
@@ -48,7 +48,7 @@ class RectWidget(CommonParameterWidget):
 
     @property
     def value_widget(self) -> QWidget:
-        self._config: RectWidgetConfig
+        self._config: RectSelectConfig
         if self._value_widget is None:
             self._value_widget = QWidget(self)
 
@@ -149,7 +149,7 @@ class RectWidget(CommonParameterWidget):
         )
 
     def _create_element_widget(self, index: int):
-        self._config: RectWidgetConfig
+        self._config: RectSelectConfig
         default_value = self._config.default_value
         if default_value is None:
             element_value = None

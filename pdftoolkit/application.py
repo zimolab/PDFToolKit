@@ -10,7 +10,7 @@ from pyguiadapter.adapter import GUIAdapter
 from pyguiadapter.widgets import ParameterWidgetFactory
 from qtpy.QtWidgets import QApplication
 
-from pdftoolkit.widgets import rect_tuple_t, RectWidget
+from pdftoolkit.widgets import rect_tuple_t, RectSelect
 from pdftoolkit import logme
 from pdftoolkit.configuration import GlobalConfig, get_theme_safely
 from pdftoolkit.tools import select_window, pdfmerger
@@ -22,7 +22,7 @@ _L = logme.new(__name__)
 
 
 def register_parameter_widgets():
-    ParameterWidgetFactory.register(rect_tuple_t, RectWidget)
+    ParameterWidgetFactory.register(rect_tuple_t, RectSelect)
 
 
 def on_app_start(app: QApplication):
