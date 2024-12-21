@@ -1,3 +1,10 @@
+"""
+This module provides a parameter widget for selecting a rectangular region in a PDF page.
+
+@author: zimolab
+@created: 2024-12-11
+"""
+
 import dataclasses
 from typing import Any, Optional, Type, Literal, Tuple
 
